@@ -38,7 +38,7 @@ class Addresses extends AbstractEndpoint
      * @param string $id
      * @return Address
      */
-    public function get(string $id): Address
+    public function getById(string $id): Address
     {
         $response = $this->get("/address/{$id}");
         return new Address($response->getData());
@@ -86,7 +86,7 @@ class Addresses extends AbstractEndpoint
      * @param string $id
      * @return bool
      */
-    public function delete(string $id): bool
+    public function deleteAddress(string $id): bool
     {
         $response = $this->delete("/addresses/delete/{$id}");
         return $response->isSuccessful();

@@ -27,7 +27,7 @@ class Services extends AbstractEndpoint
      * @param string $serviceId
      * @return array<string, mixed>
      */
-    public function get(string $serviceId): array
+    public function getService(string $serviceId): array
     {
         $response = $this->get("/services/{$serviceId}");
         return $response->getData();

@@ -30,7 +30,7 @@ class Shipments extends AbstractEndpoint
      * @param string $uuid
      * @return Shipment
      */
-    public function get(string $uuid): Shipment
+    public function getShipment(string $uuid): Shipment
     {
         $response = $this->get("/shipments/info/{$uuid}");
         return new Shipment($response->getData());
@@ -76,9 +76,9 @@ class Shipments extends AbstractEndpoint
      * @param array<string> $uuids
      * @return Response
      */
-    public function delete(array $uuids): Response
+    public function deleteShipment(array $uuids): Response
     {
-        return $this->post('/shipments/delete', ['shipmentIds' => $uuids]);
+        return $this->delete('/shipments', ['shipmentIds' => $uuids]);
     }
 
     /**

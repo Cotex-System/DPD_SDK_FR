@@ -26,7 +26,7 @@ class Countries extends AbstractEndpoint
      * @param string $countryCode
      * @return array<string, mixed>
      */
-    public function get(string $countryCode): array
+    public function getByCode(string $countryCode): array
     {
         $response = $this->get("/countries/{$countryCode}");
         return $response->getData();

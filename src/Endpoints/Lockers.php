@@ -38,7 +38,7 @@ class Lockers extends AbstractEndpoint
      * @param string $id
      * @return Locker
      */
-    public function get(string $id): Locker
+    public function getLocker(string $id): Locker
     {
         $response = $this->get("/lockers/{$id}");
         return new Locker($response->getData());

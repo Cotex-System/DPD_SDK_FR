@@ -12,6 +12,7 @@ use DPD\Exceptions\NotFoundException;
 use DPD\Exceptions\RateLimitException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -154,7 +155,7 @@ class HttpClient
      */
     private function handleException(GuzzleException $exception): void
     {
-        $response = method_exists($exception, 'getResponse') ? $exception->getResponse() : null;
+        $response = $exception instanceof RequestException ? $exception->getResponse() : null;
         $statusCode = $response?->getStatusCode() ?? 0;
         $body = $response ? (string) $response->getBody() : '';
         

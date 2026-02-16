@@ -41,7 +41,7 @@ class Manifests extends AbstractEndpoint
      * @param string $uuid
      * @return Manifest
      */
-    public function get(string $uuid): Manifest
+    public function getManifest(string $uuid): Manifest
     {
         $response = $this->get("/shipments/manifests/{$uuid}");
         return new Manifest($response->getData());

@@ -27,7 +27,7 @@ class Invoices extends AbstractEndpoint
      * @param string $invoiceId
      * @return array<string, mixed>
      */
-    public function get(string $invoiceId): array
+    public function getInvoice(string $invoiceId): array
     {
         $response = $this->get("/invoices/{$invoiceId}");
         return $response->getData();

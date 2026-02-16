@@ -14,7 +14,7 @@ class Profile extends AbstractEndpoint
      *
      * @return array<string, mixed>
      */
-    public function get(): array
+    public function getProfile(): array
     {
         $response = $this->get('/profile');
         return $response->getData();
