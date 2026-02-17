@@ -7,9 +7,7 @@ namespace DPD\Auth;
 use DPD\Config\Config;
 use DPD\Exceptions\AuthenticationException;
 use DPD\Http\HttpClient;
-use DPD\Http\Response;
 use DPD\Models\Response\TokenPayloadDTO;
-use TheSeer\Tokenizer\Token;
 
 /**
  * Gestion de l'authentification avec l'API DPD
@@ -54,23 +52,28 @@ class Authenticator
         }
 
         try {
-            // Use the Authentication endpoint to create a token
-            $data = $this->getAuthEndpoint()->createToken(
-                $this->config->getUsername(),
-                $this->config->getPassword(),
-                'SDK Token'
+            $originalToken = $this->config->getOriginalToken();
+
+            if ($originalToken === null) {
+                throw new AuthenticationException('Original token is required. Configure original_token in SDK config.');
+            }
+
+            $tokenDto = $this->getAuthEndpoint()->createToken(
+                $originalToken,
+                $this->config->getTokenId(),
+                $this->config->getTokenTtl()
             );
 
-            if (!isset($data['token'])) {
+            if ($tokenDto->getToken() === null) {
                 throw new AuthenticationException('Token not found in response');
             }
 
-            $this->accessToken = $data['token'];
+            $this->accessToken = $tokenDto->getToken();
             $this->config->setApiToken($this->accessToken);
 
             // Calculate expiration from validUntil if provided
-            if (isset($data['validUntil'])) {
-                $validUntil = strtotime($data['validUntil']);
+            if ($tokenDto->getValidUntil() !== null) {
+                $validUntil = strtotime($tokenDto->getValidUntil());
                 if ($validUntil !== false) {
                     $this->expiresAt = $validUntil;
                 } else {

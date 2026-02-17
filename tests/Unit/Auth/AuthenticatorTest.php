@@ -18,8 +18,9 @@ class AuthenticatorTest extends TestCase
     {
         $this->config = new Config([
             'api_url' => 'https://api-sandbox.dpd.fr',
-            'username' => 'test_user',
-            'password' => 'test_pass',
+            'original_token' => 'test_original_token',
+            'token_id' => 'SDK Test Token',
+            'token_ttl' => 3600,
         ]);
 
         $this->httpClient = $this->createMock(HttpClient::class);

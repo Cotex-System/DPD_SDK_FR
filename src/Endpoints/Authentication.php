@@ -17,30 +17,32 @@ use DPD\Models\Response\TokenSecretDTO;
 class Authentication extends AbstractEndpoint
 {
     /**
-     * Obtenir un nouveau token avec Basic Auth
+     * Créer un nouveau token API à partir d'un token d'origine
      * 
-     * POST /auth/tokens - Requires basic auth
-     * Uses TokenRequestDTO internally
+     * POST /auth/tokens
+     * Le body contient:
+     * - name => tokenId
+     * - ttl => durée de vie du token (optionnel)
+     *
+     * Le token d'origine doit être créé sur le portail DPD.
+     * L'authentification email/mot de passe n'est pas utilisée.
      * 
-     * @param string $username Username for basic authentication
-     * @param string $password Password for basic authentication
-     * @param string $name Human-readable name for the token (TokenRequestDTO::name)
-     * @param int|null $ttl Optional secret/token TTL in seconds (TokenRequestDTO::ttl, max: 9999999999999)
+     * @param string $originalToken Token d'origine créé sur le site DPD
+     * @param string $tokenId Identifiant/nom du token à créer (envoyé dans body[name])
+     * @param int|null $ttl Durée de vie du token à créer en secondes (envoyé dans body[ttl])
      * @return TokenDTO Token with secretId, validUntil, token
      */
-    public function createToken(string $username, string $password, string $name = 'API Token', ?int $ttl = null): TokenDTO
+    public function createToken(string $originalToken, string $tokenId = 'SDK Token', ?int $ttl = null): TokenDTO
     {
-        $data = ['name' => $name];
+        $data = ['name' => $tokenId];
         
         if ($ttl !== null) {
             $data['ttl'] = $ttl;
         }
-        
-        $credentials = base64_encode("{$username}:{$password}");
-        
-        // Don't use ensureAuthenticated for this request, use basic auth instead
+
+        // Don't use ensureAuthenticated for this request, use original token auth instead
         $response = $this->httpClient->post('/auth/tokens', $data, [
-            'Authorization' => 'Basic ' . $credentials,
+            'Authorization' => 'Bearer ' . $originalToken,
         ]);
         
         return new TokenDTO($response->getData());

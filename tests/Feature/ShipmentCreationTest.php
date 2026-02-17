@@ -21,14 +21,15 @@ class ShipmentCreationTest extends TestCase
 
     protected function setUp(): void
     {
-        if (empty(getenv('DPD_USERNAME')) || empty(getenv('DPD_PASSWORD'))) {
-            $this->markTestSkipped('DPD credentials not configured');
+        if (empty(getenv('DPD_ORIGINAL_TOKEN'))) {
+            $this->markTestSkipped('DPD original token not configured');
         }
 
         $this->client = new DPDClient([
             'api_url' => getenv('DPD_API_URL') ?: 'https://api-sandbox.dpd.fr',
-            'username' => getenv('DPD_USERNAME'),
-            'password' => getenv('DPD_PASSWORD'),
+            'original_token' => getenv('DPD_ORIGINAL_TOKEN'),
+            'token_id' => getenv('DPD_TOKEN_ID') ?: 'SDK Token',
+            'token_ttl' => getenv('DPD_TOKEN_TTL') !== false ? (int) getenv('DPD_TOKEN_TTL') : null,
         ]);
 
         $this->client->authenticate();

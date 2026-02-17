@@ -20,6 +20,7 @@ class AuthenticationEndpointTest extends TestCase
     {
         $httpClient = $this->createMock(HttpClient::class);
         $authenticator = $this->createMock(Authenticator::class);
+        $originalToken = 'original-token-123';
 
         $payload = [
             'secretId' => 'abc-123',
@@ -32,13 +33,13 @@ class AuthenticationEndpointTest extends TestCase
             ->method('post')
             ->with(
                 '/auth/tokens',
-                ['name' => 'API Token'],
-                ['Authorization' => 'Basic ' . base64_encode('user:pass')]
+                ['name' => 'SDK Token'],
+                ['Authorization' => 'Bearer ' . $originalToken]
             )
             ->willReturn($this->responseFromArray($payload));
 
         $endpoint = new Authentication($httpClient, $authenticator);
-        $token = $endpoint->createToken('user', 'pass');
+        $token = $endpoint->createToken($originalToken, 'SDK Token');
 
         $this->assertInstanceOf(TokenDTO::class, $token);
         $this->assertSame('token-value', $token->getToken());
