@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
-use DPD\Models\Locker;
+use DPD\Models\Response\LockerDTO;
 
 /**
  * Gestion des points relais / Lockers
@@ -31,7 +31,7 @@ class Lockers extends AbstractEndpoint
      * startPointLatitude: float (ex: 48.8566) optional
      * startPointLongitude: float (ex: 2.3522) optional
      * lockerFeatures: array<string> Available values : consigneePickupAllowed, returnAllowed, expressAllowed, codAllowed, codPaymentType_cash, codPaymentType_cheque, codPaymentType_card (ex: '24/7') optional
-     * @return array<int, Locker>
+     * @return array<int, LockerDTO>
      */
     public function search(array $params): array
     {
@@ -41,7 +41,7 @@ class Lockers extends AbstractEndpoint
         $lockers = [];
         if (isset($data['data']) && is_array($data['data'])) {
             foreach ($data['data'] as $lockerData) {
-                $lockers[] = new Locker($lockerData);
+                $lockers[] = new LockerDTO($lockerData);
             }
         }
 

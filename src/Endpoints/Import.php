@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
-/**
- * Importation de données
- */
+use DPD\Models\Response\ImportTemplateResponseDTO;
+use DPD\Models\Response\ImportHistoryResponseDTO;
+use DPD\Models\Request\ParseCsvRequestDTO;
 class Import extends AbstractEndpoint
 {
     /**
@@ -14,24 +14,33 @@ class Import extends AbstractEndpoint
      *
      * @param int $page
      * @param int $limit
-     * @return array<string, mixed>
+     * @return array<int, ImportTemplateResponseDTO>
      */
     public function importTemplates(int $page = 0, int $limit = 100): array
     {
         $response = $this->get('/import/templates', ["page" => $page, "limit" => $limit]);
-        return $response->getData();
+        $data = $response->getData();
+        
+        $templates = [];
+        if (isset($data['data']) && is_array($data['data'])) {
+            foreach ($data['data'] as $templateData) {
+                $templates[] = new ImportTemplateResponseDTO($templateData);
+            }
+        }
+        
+        return $templates;
     }
 
     /**
      * Obtenir les détails d'un modèle d'importation par son ID
      *
      * @param string $templateId
-     * @return array<string, mixed>
+     * @return ImportTemplateResponseDTO
      */
-    public function importTemplatesById(string $templateId): array
+    public function importTemplatesById(string $templateId): ImportTemplateResponseDTO
     {
         $response = $this->get("/import/templates/{$templateId}");
-        return $response->getData();
+        return new ImportTemplateResponseDTO($response->getData());
     }
 
     /**
@@ -39,12 +48,21 @@ class Import extends AbstractEndpoint
      *
       * @param int $page
       * @param int $limit
-      * @return array<string, mixed>
+      * @return array<int, ImportHistoryResponseDTO>
       */
     public function importHistory(int $page = 0, int $limit = 100): array
     {
         $response = $this->get('/import/history', ["page" => $page, "limit" => $limit]);
-        return $response->getData();
+        $data = $response->getData();
+        
+        $history = [];
+        if (isset($data['data']) && is_array($data['data'])) {
+            foreach ($data['data'] as $historyData) {
+                $history[] = new ImportHistoryResponseDTO($historyData);
+            }
+        }
+        
+        return $history;
     }
 
     /**

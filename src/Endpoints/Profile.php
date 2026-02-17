@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
+use DPD\Models\Response\UserDataDTO;
+use DPD\Models\Request\ChangePasswordDTO;
+
 /**
  * Gestion du profil utilisateur
  */
@@ -12,12 +15,12 @@ class Profile extends AbstractEndpoint
     /**
      * Obtenir les informations du profil
      *
-     * @return array<string, mixed>
+     * @return UserDataDTO
      */
-    public function getProfile(): array
+    public function getProfile(): UserDataDTO
     {
         $response = $this->get('/profile/contact-info');
-        return $response->getData();
+        return new UserDataDTO($response->getData());
     }
 
     /**
@@ -41,12 +44,12 @@ class Profile extends AbstractEndpoint
     /**
      * Obtenir les paramètres utilisateur
      *
-     * @return array<string, mixed>
+     * @return UserDataDTO
      */
-    public function getData(): array
+    public function getData(): UserDataDTO
     {
         $response = $this->get('/user/data');
-        return $response->getData();
+        return new UserDataDTO($response->getData());
     }
 
     /**
@@ -63,18 +66,18 @@ class Profile extends AbstractEndpoint
     /**
      * Mettre à jour le mot de passe utilisateur
      *
-     * @param array<string, mixed> $data
-     * example value:
-     * {
-     *   "oldPassword": "old_password",
-     *   "newPassword": "new_secure_password",
-     *  "repeatedPassword": "new_secure_password"
-     * }
-      * @return array<string, mixed>
-      */
-    public function updatePassword(array $data): array
+     * @param array<string, mixed>|ChangePasswordDTO $data Use ChangePasswordDTO with:
+     *                                                       - currentPassword: string
+     *                                                       - newPassword: string
+     *                                                       - confirmPassword: string
+     * @return UserDataDTO
+     */
+    public function updatePassword(array|
+
+ChangePasswordDTO $data): UserDataDTO
     {
-        $response = $this->post('/password', $data);
-        return $response->getData();
+        $requestData = $data instanceof ChangePasswordDTO ? $data->toArray() : $data;
+        $response = $this->post('/password', $requestData);
+        return new UserDataDTO($response->getData());
     }
 }

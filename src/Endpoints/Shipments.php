@@ -8,6 +8,7 @@ use DPD\Http\Response;
 use DPD\Models\Shipment;
 use DPD\Models\Response\ShipmentDTO;
 use DPD\Models\Response\ShipmentPageDTO;
+use DPD\Models\Response\LeadTimeResponseDTO;
 
 /**
  * Gestion des envois
@@ -376,7 +377,7 @@ class Shipments extends AbstractEndpoint
     }
 
     public function getLeadtime(?string $originCountry = null, ?string $originPostalCode = null, ?string $destinationCountry = null,
-    ?string $destinationPostalCode = null, ?string $productAlias = null, array $additionalServiceAlias = []): array
+    ?string $destinationPostalCode = null, ?string $productAlias = null, array $additionalServiceAlias = []): LeadTimeResponseDTO
     {
         $params=[];
         if ($originCountry !== null) {
@@ -399,7 +400,7 @@ class Shipments extends AbstractEndpoint
         }
 
         $response = $this->get('/shipments/leadtime', $params);
-        return $response->getData();
+        return new LeadTimeResponseDTO($response->getData());
     }
 
     /**

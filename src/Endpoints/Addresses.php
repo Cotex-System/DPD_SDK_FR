@@ -6,6 +6,7 @@ namespace DPD\Endpoints;
 
 use DPD\Models\Address;
 use DPD\Models\AddressDTO;
+use DPD\Models\Request\AddressCreationDTO;
 
 /**
  * Gestion du carnet d'adresses
@@ -52,35 +53,25 @@ class Addresses extends AbstractEndpoint
     /**
      * Créer ou modifier une adresse
      *
-     * @param array<string, mixed> $data{
-     * "addressId": "string",
-     * "name": "string",
-     * "contactName": "string",
-     * "contactInfo": "string",
-     * "email": "string",
-     * "phone": "string",
-     * "city": "string",
-     * "country": "string",
-     * "region": "string",
-     * "street": "string",
-     * "streetNo": "string",
-     * "flatNo": "string",
-     * "zip": "string",
-     * "pudoId": "string",
-     * "pudoAddress": "string",
-     * "pudoZip": "string",
-     * "pudoCountryCode": "string",
-     * "type": "sender",
-     * "defaultAddressesIds": [
-     *   "string"
-     * ],
-     * "isDefault": true
-     *}
+     * @param array<string, mixed>|AddressCreationDTO $data Use AddressCreationDTO with properties:
+     *                                                        - name: string
+     *                                                        - contactName: string
+     *                                                        - email: string
+     *                                                        - phone: string
+     *                                                        - street: string
+     *                                                        - streetNo: string
+     *                                                        - flatNo: string
+     *                                                        - city: string
+     *                                                        - zip: string
+     *                                                        - country: string
+     *                                                        - type: string (sender, receiver, return)
+     *                                                        - isDefault: bool
      * @return AddressDTO
      */
-    public function save(array $data): AddressDTO
+    public function save(array|\DPD\Models\Request\AddressCreationDTO $data): AddressDTO
     {
-        $response = $this->post('/addresses/save', $data);
+        $addressData = $data instanceof AddressCreationDTO ? $data->toArray() : $data;
+        $response = $this->post('/addresses/save', $addressData);
         return new AddressDTO($response->getData());
     }
 

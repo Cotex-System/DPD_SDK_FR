@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DPD\Endpoints;
 
 use DPD\Models\Response\PickupResponseDTO;
-
+use DPD\Models\Response\TimeFrameResponseDTO;
 use DPD\Http\Response;
 
 /**
@@ -64,15 +64,25 @@ public function getPickups(array $params = []): array
     }
 
     /**
-     * Obtenir les créneaux horaires disponibles pour une collecte
+     * Obtenir les créneaux horaires disponibles pour une collecte    /**
+     * Obtenir les créneaux horaires disponibles
      *
-     * @param array<string, mixed> $params
-     * @return array<string, mixed>
+     * @param array<string, mixed> $params Use TimeFrameRequestDTO properties
+     * @return array<int, TimeFrameResponseDTO>
      */
     public function getTimeframes(array $params = []): array
     {
         $response = $this->get('/pickup/timeframes', $params);
-        return $response->getData();
+        $data = $response->getData();
+        
+        $timeframes = [];
+        if (is_array($data)) {
+            foreach ($data as $timeframeData) {
+                $timeframes[] = new TimeFrameResponseDTO($timeframeData);
+            }
+        }
+        
+        return $timeframes;
     }
 
 

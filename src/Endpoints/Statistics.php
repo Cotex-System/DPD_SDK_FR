@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
+use DPD\Models\Response\ShipmentStatsDTO;
+
 /**
  * Gestion des statistiques d'envois
  */
@@ -12,12 +14,12 @@ class Statistics extends AbstractEndpoint
     /**
      * Obtenir les statistiques d'envois
      *
-     * @return array<string, mixed>
+     * @return ShipmentStatsDTO
      */
-    public function getShipmentStats(): array
+    public function getShipmentStats(): ShipmentStatsDTO
     {
         $response = $this->get('/shipments/stats');
-        return $response->getData();
+        return new ShipmentStatsDTO($response->getData());
     }
 
     /**
@@ -25,13 +27,14 @@ class Statistics extends AbstractEndpoint
      *
      * @param string $startDate Format: Y-m-d
      * @param string $endDate Format: Y-m-d
-     * @return array<string, mixed>
+     * @return ShipmentStatsDTO
      */
-    public function getStatsByPeriod(string $startDate, string $endDate): array
+    public function getStatsByPeriod(string $startDate, string $endDate): ShipmentStatsDTO
     {
-        return $this->getShipmentStats([
+        $response = $this->get('/shipments/stats', [
             'startDate' => $startDate,
             'endDate' => $endDate,
         ]);
+        return new ShipmentStatsDTO($response->getData());
     }
 }
