@@ -363,8 +363,8 @@ class Shipments extends AbstractEndpoint
         return $response->getData();
     }
 
-    public function getLeadtime(string $originCountry=null,string $originPostalCode=null,string $destinationCountry=null,
-    string $destinationPostalCode=null,string $productAlias=null,array $additionalServiceAlias= []): array
+    public function getLeadtime(?string $originCountry = null, ?string $originPostalCode = null, ?string $destinationCountry = null,
+    ?string $destinationPostalCode = null, ?string $productAlias = null, array $additionalServiceAlias = []): array
     {
         $params=[];
         if ($originCountry !== null) {
@@ -388,5 +388,35 @@ class Shipments extends AbstractEndpoint
 
         $response = $this->get('/shipments/leadtime', $params);
         return $response->getData();
+    }
+
+    /**
+     * S'abonner aux événements de suivi pour un colis
+     *
+     * @param string $parcelNumber
+     * @param string $callbackUrl
+     * @return Response
+     */
+    public function SusbcribeToParcel(string $parcelNumber, string $callbackUrl): Response
+    {
+        return $this->post('/status/events/subscribe', [
+            'parcelNumber' => $parcelNumber,
+            'callbackUrl' => $callbackUrl,
+        ]);
+    }
+
+    /**
+     * Se désabonner des événements de suivi pour un colis
+     *
+     * @param string $parcelNumber
+     * @param string $callbackUrl
+     * @return Response
+     */
+    public function UnsubscribeFromParcel(string $parcelNumber, string $callbackUrl): Response
+    {
+        return $this->post('/status/events/unsubscribe', [
+            'parcelNumber' => $parcelNumber,
+            'callbackUrl' => $callbackUrl,
+        ]);
     }
 }
