@@ -98,15 +98,20 @@ class HttpClient
      * Effectue une requête DELETE
      *
      * @param string $endpoint
+     * @param array<string, mixed> $params
      * @param array<string, string> $headers
      * @return Response
      * @throws DPDException
      */
-    public function delete(string $endpoint, array $headers = []): Response
+    public function delete(string $endpoint, array $params = [], array $headers = []): Response
     {
-        return $this->request('DELETE', $endpoint, [
-            'headers' => $headers,
-        ]);
+        $options = ['headers' => $headers];
+        
+        if (!empty($params)) {
+            $options['query'] = $params;
+        }
+        
+        return $this->request('DELETE', $endpoint, $options);
     }
 
     /**

@@ -75,11 +75,12 @@ abstract class AbstractEndpoint
      * Effectue une requête DELETE
      *
      * @param string $endpoint
+     * @param array<string, mixed> $params
      * @return Response
      */
-    protected function delete(string $endpoint): Response
+    protected function delete(string $endpoint, array $params = []): Response
     {
         $this->ensureAuthenticated();
-        return $this->httpClient->delete($endpoint);
+        return $this->httpClient->delete($endpoint, $params);
     }
 }

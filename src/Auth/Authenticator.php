@@ -18,11 +18,26 @@ class Authenticator
     private Config $config;
     private ?string $accessToken = null;
     private ?int $expiresAt = null;
+    private ?\DPD\Endpoints\Authentication $authEndpoint = null;
 
     public function __construct(HttpClient $httpClient, Config $config)
     {
         $this->httpClient = $httpClient;
         $this->config = $config;
+    }
+
+    /**
+     * Obtenir l'instance de l'endpoint Authentication
+     * 
+     * @return \DPD\Endpoints\Authentication
+     */
+    private function getAuthEndpoint(): \DPD\Endpoints\Authentication
+    {
+        if ($this->authEndpoint === null) {
+            $this->authEndpoint = new \DPD\Endpoints\Authentication($this->httpClient, $this);
+        }
+        
+        return $this->authEndpoint;
     }
 
     /**
@@ -37,12 +52,12 @@ class Authenticator
         }
 
         try {
-            $response = $this->httpClient->authenticateBasic(
+            // Use the Authentication endpoint to create a token
+            $data = $this->getAuthEndpoint()->createToken(
                 $this->config->getUsername(),
-                $this->config->getPassword()
+                $this->config->getPassword(),
+                'SDK Token'
             );
-
-            $data = $response->getData();
 
             if (!isset($data['token'])) {
                 throw new AuthenticationException('Token not found in response');
@@ -51,11 +66,17 @@ class Authenticator
             $this->accessToken = $data['token'];
             $this->config->setApiToken($this->accessToken);
 
-            // Calculer l'expiration (généralement fourni dans la réponse)
-            if (isset($data['expires_in'])) {
-                $this->expiresAt = time() + (int) $data['expires_in'];
+            // Calculate expiration from validUntil if provided
+            if (isset($data['validUntil'])) {
+                $validUntil = strtotime($data['validUntil']);
+                if ($validUntil !== false) {
+                    $this->expiresAt = $validUntil;
+                } else {
+                    // Default: token expires in 1 hour
+                    $this->expiresAt = time() + 3600;
+                }
             } else {
-                // Par défaut, on considère que le token expire dans 1 heure
+                // Default: token expires in 1 hour
                 $this->expiresAt = time() + 3600;
             }
         } catch (\Exception $e) {
@@ -115,11 +136,57 @@ class Authenticator
         }
 
         try {
-            $response = $this->httpClient->get('/auth/me');
-            return $response->getData();
+            return $this->getAuthEndpoint()->getMe();
         } catch (\Exception $e) {
             throw new AuthenticationException(
                 'Failed to get user info: ' . $e->getMessage(),
+                0,
+                $e
+            );
+        }
+    }
+
+    /**
+     * Obtenir la liste des token-secrets
+     *
+     * @return array<int, array<string, mixed>>
+     * @throws AuthenticationException
+     */
+    public function getTokenSecrets(): array
+    {
+        if (!$this->isTokenValid()) {
+            $this->authenticate();
+        }
+
+        try {
+            return $this->getAuthEndpoint()->getTokenSecrets();
+        } catch (\Exception $e) {
+            throw new AuthenticationException(
+                'Failed to get token secrets: ' . $e->getMessage(),
+                0,
+                $e
+            );
+        }
+    }
+
+    /**
+     * Supprimer un token-secret
+     *
+     * @param string $secretId Token-secret ID (UUID format)
+     * @return void
+     * @throws AuthenticationException
+     */
+    public function deleteTokenSecret(string $secretId): void
+    {
+        if (!$this->isTokenValid()) {
+            $this->authenticate();
+        }
+
+        try {
+            $this->getAuthEndpoint()->deleteTokenSecret($secretId);
+        } catch (\Exception $e) {
+            throw new AuthenticationException(
+                'Failed to delete token secret: ' . $e->getMessage(),
                 0,
                 $e
             );
