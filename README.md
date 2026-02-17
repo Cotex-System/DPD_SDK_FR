@@ -1,25 +1,70 @@
-# SDK PHP pour l'API DPD France
+# SDK PHP DPD France
 
-SDK PHP moderne et complet pour interagir avec l'API DPD France. Permet de gérer facilement vos envois, étiquettes, suivis et toutes les fonctionnalités de l'API DPD.
+SDK PHP pour intégrer l’API DPD France : expéditions, étiquettes, suivi, enlèvements, services et utilitaires.
 
-## 📋 Prérequis
+## Sommaire
 
-- PHP 8.0 ou supérieur
-- Extension cURL activée
-- Extension JSON activée
-- Compte DPD avec accès API
+- Présentation
+- Installation
+- Configuration
+- Démarrage rapide
+- Endpoints disponibles
+- Architecture
+- Tests
+- Qualité de code
+- Dépannage
+- Contribution
 
-## 🚀 Installation
+## Présentation
 
-Via Composer :
+### Prérequis
+
+- PHP `>=8.0`
+- Extensions PHP `curl`, `json`
+- Composer
+- Un compte DPD avec accès API
+
+### Fonctionnalités principales
+
+- Authentification et gestion des tokens
+- Création/mise à jour/liste d’expéditions
+- Génération d’étiquettes
+- Suivi colis
+- Carnet d’adresses
+- Manifests
+- Pickups (collectes)
+- Lockers / points relais
+- Services, pays, statistiques, factures
+
+## Installation
+
+### Via Composer
 
 ```bash
 composer require votrecompany/dpd-france-sdk
 ```
 
-## 🔧 Configuration
+### Développement local
 
-### Initialisation du client
+```bash
+git clone https://github.com/votrecompany/dpd-france-sdk.git
+cd dpd-france-sdk
+composer install
+```
+
+## Configuration
+
+### Option A — Variables d’environnement (recommandé)
+
+Créez un fichier `.env` :
+
+```env
+DPD_API_URL=https://api-sandbox.dpd.fr
+DPD_USERNAME=votre_username
+DPD_PASSWORD=votre_password
+```
+
+### Option B — Configuration directe
 
 ```php
 <?php
@@ -29,215 +74,129 @@ require 'vendor/autoload.php';
 use DPD\DPDClient;
 
 $client = new DPDClient([
+    'api_url' => 'https://api-sandbox.dpd.fr',
     'username' => 'votre_username',
     'password' => 'votre_password',
-    'environment' => 'production', // ou 'sandbox'
 ]);
 ```
 
-### Variables d'environnement (recommandé)
-
-Créez un fichier `.env` :
-
-```env
-DPD_USERNAME=votre_username
-DPD_PASSWORD=votre_password
-DPD_ENVIRONMENT=production
-```
-
-## 📦 Utilisation
-
-### Créer un envoi
+### Options avancées
 
 ```php
-use DPD\Models\Shipment;
-use DPD\Models\Address;
-use DPD\Models\Parcel;
-
-// Créer l'adresse destinataire
-$receiver = new Address([
-    'name' => 'Jean Dupont',
-    'street' => '123 Rue de la Paix',
-    'city' => 'Paris',
-    'postalCode' => '75001',
-    'countryCode' => 'FR',
-    'phone' => '+33612345678',
-    'email' => 'jean.dupont@example.com'
+$client = new DPDClient([
+    'api_url' => 'https://api-sandbox.dpd.fr',
+    'username' => 'xxx',
+    'password' => 'xxx',
+    'timeout' => 60,
+    'connect_timeout' => 15,
 ]);
-
-// Créer le colis
-$parcel = new Parcel([
-    'weight' => 2.5, // en kg
-    'width' => 30,   // en cm
-    'height' => 20,  // en cm
-    'depth' => 10    // en cm
-]);
-
-// Créer l'envoi
-$shipment = $client->shipments()->create([
-    'receiver' => $receiver,
-    'parcels' => [$parcel],
-    'product' => 'DPD_CLASSIC',
-    'reference' => 'CMD-12345'
-]);
-
-echo "Envoi créé avec succès ! UUID: " . $shipment->uuid;
 ```
 
-### Générer une étiquette
+## Démarrage rapide
+
+### 1) Créer un envoi
 
 ```php
-// Générer l'étiquette pour un envoi
+use DPD\Models\AddressDTO;
+use DPD\Models\ShipmentParcelDTO;
+use DPD\Models\ShipmentServiceDTO;
+use DPD\Models\Request\ShipmentCreationDTO;
+
+$sender = (new AddressDTO())
+    ->setName('Sender')
+    ->setCity('Paris')
+    ->setPostalCode('75001')
+    ->setCountry('FR')
+    ->setPhone('+33123456789')
+    ->setEmail('sender@example.com');
+
+$receiver = (new AddressDTO())
+    ->setName('Receiver')
+    ->setCity('Lyon')
+    ->setPostalCode('69001')
+    ->setCountry('FR')
+    ->setPhone('+33987654321')
+    ->setEmail('receiver@example.com');
+
+$service = (new ShipmentServiceDTO())->setServiceAlias('DPD_CLASSIC');
+$parcel = (new ShipmentParcelDTO())->setWeight(2.5)->setSize('M');
+
+$request = (new ShipmentCreationDTO())
+    ->setSenderAddress($sender)
+    ->setReceiverAddress($receiver)
+    ->setService($service)
+    ->setParcels([$parcel]);
+
+$shipment = $client->shipments()->create($request->toArray());
+echo $shipment->getId();
+```
+
+### 2) Générer une étiquette
+
+```php
 $label = $client->labels()->create([
-    'shipmentIds' => [$shipment->uuid],
-    'format' => 'PDF', // PDF, ZPL, etc.
-    'startPosition' => 'UPPER_LEFT'
+    'shipmentIds' => [$shipment->getId()],
+    'downloadLabel' => true,
+    'labelFormat' => 'application/pdf',
 ]);
 
-// Télécharger le PDF de l'étiquette
-file_put_contents('etiquette.pdf', base64_decode($label->content));
+$label->saveToFile('label.pdf');
 ```
 
-### Suivre un colis
+### 3) Suivre un colis
 
 ```php
-// Suivi par numéro de colis
 $tracking = $client->tracking()->getByParcelNumber('12345678901234');
-
-echo "Statut: " . $tracking->status . "\n";
-echo "Dernier événement: " . $tracking->lastEvent->description . "\n";
+echo $tracking->getStatus();
 ```
 
-### Gérer le carnet d'adresses
+### 4) Rechercher des lockers
 
 ```php
-// Lister les adresses
-$addresses = $client->addresses()->list(['type' => 'receiver']);
-
-// Créer une nouvelle adresse
-$newAddress = $client->addresses()->create([
-    'name' => 'Restaurant La Belle Époque',
-    'street' => '45 Avenue des Champs-Élysées',
-    'city' => 'Paris',
-    'postalCode' => '75008',
-    'countryCode' => 'FR',
-    'type' => 'receiver'
-]);
-```
-
-### Créer un manifeste
-
-```php
-// Créer un manifeste pour plusieurs envois
-$manifest = $client->manifests()->create([
-    'shipmentIds' => [$shipment1->uuid, $shipment2->uuid],
-    'format' => 'PDF'
-]);
-
-// Télécharger le manifeste
-file_put_contents('manifest.pdf', base64_decode($manifest->content));
-```
-
-### Gérer les points relais (Lockers)
-
-```php
-// Rechercher des Pickup points autour d'une adresse
 $lockers = $client->lockers()->search([
     'countryCode' => 'FR',
     'postalCode' => '75001',
-    'limit' => 10
-]);
-
-foreach ($lockers as $locker) {
-    echo $locker->name . " - " . $locker->address . "\n";
-}
-```
-
-## 📚 Fonctionnalités principales
-
-### Endpoints disponibles
-
-- ✅ **Authentication** - Gestion des tokens et authentification
-- ✅ **Shipments** - Création, modification, suppression d'envois
-- ✅ **Labels** - Génération d'étiquettes (PDF, ZPL)
-- ✅ **Tracking** - Suivi des colis en temps réel
-- ✅ **Addresses** - Gestion du carnet d'adresses
-- ✅ **Manifests** - Création de bordereaux de remise
-- ✅ **Lockers** - Recherche de points relais
-- ✅ **Pickup** - Planification de collectes
-- ✅ **Services** - Consultation des services disponibles
-- ✅ **Countries & Cities** - Informations géographiques
-- ✅ **Invoices** - Gestion des factures
-- ✅ **Statistics** - Statistiques d'envois
-
-### Gestion des erreurs
-
-```php
-use DPD\Exceptions\DPDException;
-use DPD\Exceptions\AuthenticationException;
-use DPD\Exceptions\ValidationException;
-
-try {
-    $shipment = $client->shipments()->create($data);
-} catch (ValidationException $e) {
-    echo "Erreur de validation: " . $e->getMessage();
-    print_r($e->getErrors());
-} catch (AuthenticationException $e) {
-    echo "Erreur d'authentification: " . $e->getMessage();
-} catch (DPDException $e) {
-    echo "Erreur DPD: " . $e->getMessage();
-}
-```
-
-### Logging
-
-```php
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
-$logger = new Logger('dpd');
-$logger->pushHandler(new StreamHandler('dpd.log', Logger::DEBUG));
-
-$client = new DPDClient([
-    'username' => 'votre_username',
-    'password' => 'votre_password',
-    'logger' => $logger
+    'limit' => 10,
 ]);
 ```
 
-## 🏗️ Architecture du SDK
+## Endpoints disponibles
 
-```
+- `authentication`
+- `shipments`
+- `labels`
+- `tracking`
+- `addresses`
+- `manifests`
+- `pickup`
+- `services`
+- `countries`
+- `lockers`
+- `invoices`
+- `statistics`
+- `profile`
+- `import`
+- `mixedEndpoint`
+
+## Architecture
+
+```text
 src/
-├── DPDClient.php              # Client principal
-├── Config/
-│   └── Config.php             # Configuration du SDK
+├── DPDClient.php
 ├── Auth/
-│   └── Authenticator.php      # Gestion de l'authentification
+│   └── Authenticator.php
+├── Config/
+│   └── Config.php
 ├── Http/
-│   ├── HttpClient.php         # Client HTTP (Guzzle)
-│   └── Response.php           # Wrapper de réponse
+│   ├── HttpClient.php
+│   └── Response.php
 ├── Endpoints/
-│   ├── AbstractEndpoint.php   # Classe de base pour les endpoints
-│   ├── Shipments.php          # Gestion des envois
-│   ├── Labels.php             # Gestion des étiquettes
-│   ├── Tracking.php           # Suivi de colis
-│   ├── Addresses.php          # Carnet d'adresses
-│   ├── Manifests.php          # Bordereaux
-│   ├── Lockers.php            # Points relais
-│   ├── Pickup.php             # Collectes
-│   ├── Services.php           # Services
-│   ├── Countries.php          # Pays
-│   ├── Invoices.php           # Factures
-│   └── Statistics.php         # Statistiques
+│   ├── AbstractEndpoint.php
+│   └── ...
 ├── Models/
-│   ├── Shipment.php
-│   ├── Address.php
-│   ├── Parcel.php
-│   ├── Label.php
-│   ├── Tracking.php
-│   ├── Manifest.php
-│   ├── Locker.php
+│   ├── AbstractModel.php
+│   ├── Request/
+│   ├── Response/
 │   └── ...
 └── Exceptions/
     ├── DPDException.php
@@ -247,38 +206,78 @@ src/
     └── RateLimitException.php
 ```
 
-## 🧪 Tests
+### Principes
+
+- Typage strict (`declare(strict_types=1)`)
+- DTOs pour les requêtes/réponses
+- Endpoints découplés et testables
+- Gestion centralisée des erreurs
+
+## Tests
+
+### Lancer les tests
 
 ```bash
-# Exécuter les tests
+# Tous les tests
 composer test
 
+# Unitaires (sans credentials)
+vendor/bin/phpunit tests/Unit --testdox
+
+# Intégration (avec credentials)
+vendor/bin/phpunit tests/Integration --testdox
+
+# Fonctionnels
+vendor/bin/phpunit tests/Feature --testdox
+```
+
+### État actuel
+
+- Les tests unitaires sont conçus pour fonctionner sans identifiants (mocks HTTP).
+- Les tests d’intégration se `skip` automatiquement si `DPD_USERNAME`/`DPD_PASSWORD` ne sont pas définis.
+
+### Variables utiles pour l’intégration
+
+```env
+DPD_API_URL=https://api-sandbox.dpd.fr
+DPD_USERNAME=votre_username
+DPD_PASSWORD=votre_password
+```
+
+## Qualité de code
+
+```bash
 # Analyse statique
 composer phpstan
 
-# Vérification du style de code
+# Vérification style
 composer cs-check
+
+# Correction style
+composer cs-fix
 ```
 
-## 📖 Documentation de l'API
+## Dépannage
 
-Pour plus de détails sur l'API DPD, consultez la [documentation officielle](https://dpd.com/api).
+### `phpunit` introuvable
 
-## 🤝 Contribution
+```bash
+composer install
+```
 
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou une pull request.
+### Erreurs d’authentification en intégration
 
-## 📄 Licence
+- Vérifier `DPD_USERNAME`, `DPD_PASSWORD`
+- Vérifier l’URL (`DPD_API_URL`) et l’environnement sandbox/production
+
+### Timeouts API
+
+- Augmenter `timeout` et `connect_timeout` dans la config client
+
+## Contribution
+
+Les contributions sont bienvenues : issues, PR, suggestions d’amélioration.
+
+## Licence
 
 MIT
-
-## 🔗 Liens utiles
-
-- [Documentation API DPD](https://dpd.com/api)
-- [Support DPD](https://www.dpd.fr/contact)
-
-## ⚠️ Support
-
-Pour toute question ou problème :
-- Ouvrez une [issue sur GitHub](https://github.com/votrecompany/dpd-france-sdk/issues)
-- Consultez la documentation

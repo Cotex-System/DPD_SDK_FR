@@ -213,4 +213,12 @@ class DPDClient
     {
         return $this->httpClient;
     }
+
+    /**
+     * Get the value of authenticator
+     */
+    public function getAuthenticator(): Authenticator
+    {
+        return $this->authenticator;
+    }
 }
