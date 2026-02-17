@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
+use DPD\Models\Response\ServiceDTO;
+
 /**
  * Gestion des services disponibles
  */
@@ -12,47 +14,40 @@ class Services extends AbstractEndpoint
     /**
      * Obtenir la liste des services disponibles
      *
-     * @param array<string, mixed> $params
-     * example value:
-     * countryFrom:string required code ISO du pays d'origine
-     * countryTo:string required code ISO du pays de destination
-     * postalCodeFrom:string code postal d'origine
-     * postalCodeTo:string code postal de destination
-     * serviceType:string code du service Business, Private, Pudo, Collection Request, Return through Pudo
-     * mainServiceName:string nom du service principal (ex: Predict)
-     * mainServiceAlias:string alias du service principal (ex: predict)
-     * payerCode:string code du payeur (ex: sender, receiver, thirdParty)
-     * affiliateLinkedid:string id du lien affilié
-     * packageSize:string available values: XS, S, M, L, XL
-     * @return array<string, mixed>
+     * @param array<string, mixed> $params Use ServiceSearchDTO properties:
+     *                                      - senderGeography (required): address DTO with country
+     *                                      - receiverGeography (required): address DTO with country
+     *                                      - payerCode: int (required)
+     *                                      - mainServiceAlias: string (optional)
+     *                                      - packageSize: string (optional: xs, s, m, l, xl)
+     *                                      - mainService: string (optional)
+     *                                      - serviceType: string (optional)
+     * @return array<int, ServiceDTO> Array of available services
      */
     public function list(array $params = []): array
     {
         $response = $this->get('/services', $params);
-        return $response->getData();
+        $data = $response->getData();
+        
+        $services = [];
+        if (is_array($data)) {
+            foreach ($data as $serviceData) {
+                $services[] = new ServiceDTO($serviceData);
+            }
+        }
+        
+        return $services;
     }
 
     /**
      * Obtenir un service spécifique
      *
-     * @param array<string, mixed> $data
-     *  * example value:
-     * countryFrom:string required code ISO du pays d'origine
-     * countryTo:string required code ISO du pays de destination
-     * postalCodeFrom:string code postal d'origine
-     * postalCodeTo:string code postal de destination
-     * serviceType:string code du service Business, Private, Pudo, Collection Request, Return through Pudo
-     * mainServiceName:string nom du service principal (ex: Predict)
-     * mainServiceAlias:string alias du service principal (ex: predict)
-     * payerCode:string code du payeur (ex: sender, receiver, thirdParty)
-     * affiliateLinkedid:string id du lien affilié
-     * packageSize:string available values: XS, S, M, L, XL
-     * @return array<string, mixed>
-     * @return array<string, mixed>
+     * @param array<string, mixed> $data Use ServiceSearchDTO (same parameters as list)
+     * @return ServiceDTO Service information
      */
-    public function getServicesData(array $data): array
+    public function getServicesData(array $data): ServiceDTO
     {
         $response = $this->get("/service/data",  $data);
-        return $response->getData();
+        return new ServiceDTO($response->getData());
     }
 }

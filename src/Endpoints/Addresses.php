@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DPD\Endpoints;
 
 use DPD\Models\Address;
+use DPD\Models\AddressDTO;
 
 /**
  * Gestion du carnet d'adresses
@@ -14,9 +15,11 @@ class Addresses extends AbstractEndpoint
     /**
      * Lister les adresses
      *
-     * @param array<string, mixed> $params
-     *   address:string - Filtrer par adresse,name:string - Filtrer par nom, 
-     *   contactName:string - Filtrer par nom de contact, type:string *required (sender,receiver,return)
+     * @param array<string, mixed> $params Filter parameters:
+     *                                      - address: string (optional)
+     *                                      - name: string (optional)
+     *                                      - contactName: string (optional)
+     *                                      - type: string (required: sender, receiver, return)
      * @return array<int, Address>
      */
     public function list(array $params = []): array
@@ -27,7 +30,7 @@ class Addresses extends AbstractEndpoint
         $addresses = [];
         if (isset($data['data']) && is_array($data['data'])) {
             foreach ($data['data'] as $addressData) {
-                $addresses[] = new Address($addressData);
+                $addresses[] = new AddressDTO($addressData);
             }
         }
 
@@ -38,12 +41,12 @@ class Addresses extends AbstractEndpoint
      * Obtenir une adresse par son ID
      *
      * @param string $id
-     * @return Address
+     * @return AddressDTO
      */
-    public function getById(string $id): Address
+    public function getById(string $id): AddressDTO
     {
         $response = $this->get("/address/{$id}");
-        return new Address($response->getData());
+        return new AddressDTO($response->getData());
     }
 
     /**
@@ -73,21 +76,21 @@ class Addresses extends AbstractEndpoint
      * ],
      * "isDefault": true
      *}
-     * @return Address
+     * @return AddressDTO
      */
-    public function save(array $data): Address
+    public function save(array $data): AddressDTO
     {
         $response = $this->post('/addresses/save', $data);
-        return new Address($response->getData());
+        return new AddressDTO($response->getData());
     }
 
     /**
      * Créer une nouvelle adresse (alias de save)
      *
      * @param array<string, mixed> $data
-     * @return Address
+     * @return AddressDTO
      */
-    public function create(array $data): Address
+    public function create(array $data): AddressDTO
     {
         return $this->save($data);
     }
@@ -97,9 +100,9 @@ class Addresses extends AbstractEndpoint
      *
      * @param string $id
      * @param array<string, mixed> $data
-     * @return Address
+     * @return AddressDTO
      */
-    public function update(string $id, array $data): Address
+    public function update(string $id, array $data): AddressDTO
     {
         $data['addressId'] = $id;
         return $this->save($data);

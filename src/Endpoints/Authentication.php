@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace DPD\Endpoints;
 
 use DPD\Http\Response;
+use DPD\Models\Response\TokenDTO;
+use DPD\Models\Response\TokenPayloadDTO;
+use DPD\Models\Response\TokenSecretDTO;
 
 /**
  * Gestion de l'authentification
@@ -16,22 +19,16 @@ class Authentication extends AbstractEndpoint
     /**
      * Obtenir un nouveau token avec Basic Auth
      * 
-     * POST /auth/tokens - Accepts basic auth
+     * POST /auth/tokens - Requires basic auth
+     * Uses TokenRequestDTO internally
      * 
      * @param string $username Username for basic authentication
      * @param string $password Password for basic authentication
-     * @param string $name Human-readable name for the token
-     * @param int|null $ttl Optional secret/token TTL in seconds
-     * @return array<string, mixed> TokenDTO containing secretId, validUntil, and token
-     * 
-     * Response structure:
-     * [
-     *   'secretId' => '032c0270-92b2-40ab-bd5a-455fe33a5718',
-     *   'validUntil' => '2024-12-31 23:59:59',
-     *   'token' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...'
-     * ]
+     * @param string $name Human-readable name for the token (TokenRequestDTO::name)
+     * @param int|null $ttl Optional secret/token TTL in seconds (TokenRequestDTO::ttl, max: 9999999999999)
+     * @return TokenDTO Token with secretId, validUntil, token
      */
-    public function createToken(string $username, string $password, string $name = 'API Token', ?int $ttl = null): array
+    public function createToken(string $username, string $password, string $name = 'API Token', ?int $ttl = null): TokenDTO
     {
         $data = ['name' => $name];
         
@@ -46,7 +43,7 @@ class Authentication extends AbstractEndpoint
             'Authorization' => 'Basic ' . $credentials,
         ]);
         
-        return $response->getData();
+        return new TokenDTO($response->getData());
     }
 
     /**
@@ -54,21 +51,12 @@ class Authentication extends AbstractEndpoint
      * 
      * GET /auth/me
      * 
-     * @return array<string, mixed> TokenPayloadDTO containing userId, secretId, secretName, permissions, userMetadataDTO
-     * 
-     * Response structure:
-     * [
-     *   'userId' => '1',
-     *   'secretId' => '032c0270-92b2-40ab-bd5a-455fe33a5718',
-     *   'secretName' => 'AMBER GUI',
-     *   'permissions' => ['permission1', 'permission2'],
-     *   'userMetadataDTO' => [...]
-     * ]
+     * @return TokenPayloadDTO User info with userId, secretId, secretName, permissions
      */
-    public function getMe(): array
+    public function getMe(): TokenPayloadDTO
     {
         $response = $this->get('/auth/me');
-        return $response->getData();
+        return new TokenPayloadDTO($response->getData());
     }
 
     /**
@@ -76,22 +64,21 @@ class Authentication extends AbstractEndpoint
      * 
      * GET /auth/token-secrets
      * 
-     * @return array<int, array<string, mixed>> Array of TokenSecretDTO
-     * 
-     * Response structure:
-     * [
-     *   [
-     *     'secretId' => '032c0270-92b2-40ab-bd5a-455fe33a5718',
-     *     'name' => 'AMBER GUI',
-     *     'createdAt' => '2023-01-30 23:59:59'
-     *   ],
-     *   ...
-     * ]
+     * @return array<int, TokenSecretDTO> Array of token secrets
      */
     public function getTokenSecrets(): array
     {
         $response = $this->get('/auth/token-secrets');
-        return $response->getData();
+        $data = $response->getData();
+        
+        $secrets = [];
+        if (is_array($data)) {
+            foreach ($data as $secretData) {
+                $secrets[] = new TokenSecretDTO($secretData);
+            }
+        }
+        
+        return $secrets;
     }
 
     /**

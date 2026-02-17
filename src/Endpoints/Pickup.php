@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
+use DPD\Models\Response\PickupResponseDTO;
+
 use DPD\Http\Response;
 
 /**
@@ -43,44 +45,16 @@ public function getPickups(array $params = []): array
     /**
      * Planifier une collecte
      *
-     * @param array<string, mixed> $data
-     * Example value:
-     * {
-     *      "address": {
-     *          "addressId": null,
-     *          "name": "test pickup name",
-     *          "contactName": "test pickup contact name",
-     *          "contactEmail": "test pickup contact name",
-     *          "contactPhone": "test pickup contact name",
-     *          "contactInfo": null,
-     *          "email": "fwmekf@fwemfk.com",
-     *          "phone": "+37168888888",
-     *          "street": null,
-     *          "streetNo": null,
-     *          "flatNo": null,
-     *          "city": null,
-     *          "postalCode": null,
-     *          "country": "LV"
-     *      },
-     *      "shipmentIds": [
-     *          "string"
-     *      ],
-     *      "messageToCourier": null,
-     *      "pickupDate": "2021-01-10",
-     *      "pickupTimeFrom": "string",
-     *      "pickupTimeTo": "string",
-     *      "parcel": {
-     *          "count": 1000,
-     *          "weight": 31500
-     *      },
-     *      "pallets": [
-     *          {
-     *              "weight": 32767,
-     *              "type": null
-     *          }
-     *      ],
-     *      "payerCode": null
-     * }
+     * @param array<string, mixed>|\DPD\Models\Request\CreatePickupRequestDTO $data Use CreatePickupRequestDTO:
+     *                                                                                  - address: PickupCustomerAddressDTO (optional)
+     *                                                                                  - shipmentIds: array<string> (optional)
+     *                                                                                  - messageToCourier: string (optional, max 250)
+     *                                                                                  - pickupDate: string (required, Y-m-d format)
+     *                                                                                  - pickupTimeFrom: string (required)
+     *                                                                                  - pickupTimeTo: string (required)
+     *                                                                                  - parcel: ParcelDTO (optional)
+     *                                                                                  - pallets: array<PalletDTO> (optional)
+     *                                                                                  - payerCode: int (optional)
      * @return array<string, mixed>
      */
     public function schedule(array $data): array

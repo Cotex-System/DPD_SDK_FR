@@ -6,6 +6,8 @@ namespace DPD\Endpoints;
 
 use DPD\Http\Response;
 use DPD\Models\Shipment;
+use DPD\Models\Response\ShipmentDTO;
+use DPD\Models\Response\ShipmentPageDTO;
 
 /**
  * Gestion des envois
@@ -15,7 +17,15 @@ class Shipments extends AbstractEndpoint
     /**
      * Créer un nouvel envoi
      *
-     * @param array<string, mixed> $data
+     * @param array<string, mixed>|\DPD\Models\Request\ShipmentCreationDTO $data Use ShipmentCreationDTO to build parameters:
+     *                                                                                - senderAddress: AddressDTO
+     *                                                                                - receiverAddress: AddressDTO
+     *                                                                                - service: ShipmentServiceDTO (required)
+     *                                                                                - parcels: array<ShipmentParcelDTO> (required)
+     *                                                                                - additionalServices: array<AdditionalServiceDTO> (optional)
+     *                                                                                - pickup: ShipmentPickupDTO (optional)
+     *                                                                                - invoiceOptions: InvoiceOptionsDTO (optional)
+     *                                                                                - shipmentFlags: ShipmentFlagDTO (optional)
      * example value:
      * [
      *   {
@@ -173,19 +183,21 @@ class Shipments extends AbstractEndpoint
      *       }
      *   }
      * ]
-     * @return Shipment
+     * @return ShipmentDTO
      */
-    public function create(array $data): Shipment
+    public function create(array $data): ShipmentDTO
     {
         $response = $this->post('/shipments', $data);
-        return new Shipment($response->getData());
+        return new ShipmentDTO($response->getData());
     }
     /**
      * Obtenir les envois avec des paramètres de filtrage
      *  
-     * @param array<string, mixed> $params
-     * example value:
-     * ids:array<string> "uuid1,uuid2,uuid3" exact length 36
+     * @param array<string, mixed> $params Use ShipmentSearchDTO properties:
+     *                                        - ids: array<string> UUID format
+     *                                        - status: array<string> (pending, not_booked, not_printed, delivered, returned, in_route, rdl_delivered, rdl_in_route, failed, rejected)
+     *                                        - mainServiceAlias: array<string>
+     *                                        - additionalServiceAlias: array<string>
      * status:array of string, Available values : pending, not_booked, not_printed, delivered, returned, in_route, rdl_delivered, rdl_in_route, failed, rejected
      * mainServiceAlias:array<string>
      * additionnalServiceAlias:array<string>
@@ -207,7 +219,7 @@ class Shipments extends AbstractEndpoint
      * creationDateTo:date
      * page:int
      * limit:int
-     * @return array<int, Shipment>
+     * @return array<int, ShipmentDTO>
      */
     public function getShipments(array $params = []): array
     {
@@ -217,7 +229,7 @@ class Shipments extends AbstractEndpoint
         $shipments = [];
         if (isset($data['data']) && is_array($data['data'])) {
             foreach ($data['data'] as $shipmentData) {
-                $shipments[] = new Shipment($shipmentData);
+                $shipments[] = new ShipmentDTO($shipmentData);
             }
         }
 
@@ -227,12 +239,12 @@ class Shipments extends AbstractEndpoint
      * Obtenir un envoi par son UUID
      *
      * @param string $uuid
-     * @return Shipment
+     * @return ShipmentDTO
      */
-    public function getShipment(string $uuid): Shipment
+    public function getShipment(string $uuid): ShipmentDTO
     {
         $response = $this->get("/shipments/info/{$uuid}");
-        return new Shipment($response->getData());
+        return new ShipmentDTO($response->getData());
     }
 
     /**
@@ -240,7 +252,7 @@ class Shipments extends AbstractEndpoint
      *
      * @param int $page
      * 
-     * @return array<int, Shipment>
+     * @return array<int, ShipmentDTO>
      */
     public function list(int $page = 0): array
     {
@@ -250,7 +262,7 @@ class Shipments extends AbstractEndpoint
         $shipments = [];
         if (isset($data['data']) && is_array($data['data'])) {
             foreach ($data['data'] as $shipmentData) {
-                $shipments[] = new Shipment($shipmentData);
+                $shipments[] = new ShipmentDTO($shipmentData);
             }
         }
 
@@ -260,14 +272,14 @@ class Shipments extends AbstractEndpoint
     /**
      * Mettre à jour un envoi
      *
-     * @param string $uuid
-     * @param array<string, mixed> $data
-     * @return Shipment
+     * @param string $uuid Shipment UUID
+     * @param array<string, mixed> $data Use ShipmentCreationDTO properties (same as create)
+     * @return ShipmentDTO
      */
-    public function update(string $uuid, array $data): Shipment
+    public function update(string $uuid, array $data): ShipmentDTO
     {
         $response = $this->put("/shipments/info/{$uuid}", $data);
-        return new Shipment($response->getData());
+        return new ShipmentDTO($response->getData());
     }
 
     /**
@@ -286,19 +298,19 @@ class Shipments extends AbstractEndpoint
      * Copier un envoi
      *
      * @param string $uuid
-     * @return Shipment
+     * @return ShipmentDTO
      */
-    public function copy(string $uuid): Shipment
+    public function copy(string $uuid): ShipmentDTO
     {
         $response = $this->post('/shipments/copy', ['shipmentId' => $uuid]);
-        return new Shipment($response->getData());
+        return new ShipmentDTO($response->getData());
     }
 
     /**
      * Obtenir les envois nécessitant une attention
      *
      * @param int $page
-     * @return array<int, Shipment>
+     * @return array<int, ShipmentDTO>
      */
     public function needsAttention(int $page = 0): array
     {
@@ -308,7 +320,7 @@ class Shipments extends AbstractEndpoint
         $shipments = [];
         if (isset($data['data']) && is_array($data['data'])) {
             foreach ($data['data'] as $shipmentData) {
-                $shipments[] = new Shipment($shipmentData);
+                $shipments[] = new ShipmentDTO($shipmentData);
             }
         }
 

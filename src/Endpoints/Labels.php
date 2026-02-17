@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace DPD\Endpoints;
 
+use DPD\Models\Response\LabelResponseDTO;
+
 use DPD\Http\Response;
 use DPD\Models\Label;
 
@@ -15,22 +17,14 @@ class Labels extends AbstractEndpoint
     /**
      * Créer des étiquettes pour des envois
      *
-     * @param array<string, mixed> $data
-     *  Example value:
-     * {
-     *  "shipmentIds": [
-     *      "15731b0c-4118-11eb-8bd3-005056bbea5f"
-     *  ],
-     *  "parcelNumbers": [
-     *      "05757894762505"
-     *  ],
-     *  "offsetPosition": null,
-     *  "downloadLabel": true,
-     *  "emailLabel": true,
-     *  "labelFormat": null,
-     *  "paperSize": null,
-     *  "dpi": "203"
-     *}
+     * @param array<string, mixed>|\DPD\Models\Request\LabelCreationDTO $data Use LabelCreationDTO:
+     *                                                                             - shipmentIds: array<string> (optional)
+     *                                                                             - parcelNumbers: array<string> (optional)
+     *                                                                             - downloadLabel: bool (optional)
+     *                                                                             - emailLabel: bool (optional)
+     *                                                                             - labelFormat: string (optional: application/pdf, image/png, application/zpl)
+     *                                                                             - paperSize: string (optional: A4, A6)
+     *                                                                             - dpi: string (optional: 203, 300)
      * @return Label
      */
     public function create(array $data): Label
@@ -42,22 +36,7 @@ class Labels extends AbstractEndpoint
     /**
      * Créer et imprimer des étiquettes
      *
-     * @param array<string, mixed> $data
-     * Example value:
-     * {
-     *  "shipmentIds": [
-     *      "15731b0c-4118-11eb-8bd3-005056bbea5f"
-     *  ],
-     *  "parcelNumbers": [
-     *      "05757894762505"
-     *  ],
-     *  "offsetPosition": null,
-     *  "downloadLabel": true,
-     *  "emailLabel": true,
-     *  "labelFormat": null,
-     *  "paperSize": null,
-     *  "dpi": "203"
-     * }
+     * @param array<string, mixed>|\DPD\Models\Request\LabelCreationDTO $data Use LabelCreationDTO (same parameters as create)
      * @return Label
      */
     public function print(array $data): Label

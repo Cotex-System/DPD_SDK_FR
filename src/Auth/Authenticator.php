@@ -8,6 +8,8 @@ use DPD\Config\Config;
 use DPD\Exceptions\AuthenticationException;
 use DPD\Http\HttpClient;
 use DPD\Http\Response;
+use DPD\Models\Response\TokenPayloadDTO;
+use TheSeer\Tokenizer\Token;
 
 /**
  * Gestion de l'authentification avec l'API DPD
@@ -126,10 +128,10 @@ class Authenticator
     /**
      * Obtenir les informations de l'utilisateur connecté
      *
-     * @return array<string, mixed>
+     * @return TokenPayloadDTO
      * @throws AuthenticationException
      */
-    public function getMe(): array
+    public function getMe(): TokenPayloadDTO
     {
         if (!$this->isTokenValid()) {
             $this->authenticate();

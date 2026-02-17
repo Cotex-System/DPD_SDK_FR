@@ -14,16 +14,9 @@ class Manifests extends AbstractEndpoint
     /**
      * Créer un manifeste
      *
-     * @param array<string, mixed> $data
-     * Example value:
-     * {
-     *  "shipmentIds": [
-     *      "15731b0c-4118-11eb-8bd3-005056bbea5f"
-     *  ],
-     *  "parcelNumbers": [
-     *      "05757894762505"
-     *  ],
-     * }
+     * @param array<string, mixed>|\DPD\Models\Request\ManifestCreationDTO $data Use ManifestCreationDTO:
+     *                                                                              - shipmentIds: array<string> (optional, UUID format)
+     *                                                                              - parcelNumbers: array<string> (optional)
      * @return Manifest
      */
     public function create(array $data): Manifest
@@ -35,16 +28,7 @@ class Manifests extends AbstractEndpoint
     /**
      * Créer et imprimer un manifeste
      *
-     * @param array<string, mixed> $data
-     * Example value:
-     * {
-     * "shipmentIds": [
-     *     "15731b0c-4118-11eb-8bd3-005056bbea5f"
-     * ],
-     * "parcelNumbers": [
-     *     "05757894762505"
-     * ],
-     * }
+     * @param array<string, mixed>|\DPD\Models\Request\ManifestCreationDTO $data Use ManifestCreationDTO (same parameters as create)
      * @return Manifest
      */
     public function print(array $data): Manifest

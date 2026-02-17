@@ -21,13 +21,41 @@ abstract class AbstractModel
     }
 
     /**
-     * Obtenir toutes les données
+     * Obtenir toutes les données sans les valeurs null
      *
      * @return array<string, mixed>
      */
     public function toArray(): array
     {
-        return $this->data;
+        return $this->filterNullValues($this->data);
+    }
+
+    /**
+     * Filtre les valeurs null de manière récursive
+     *
+     * @param array<string, mixed> $array
+     * @return array<string, mixed>
+     */
+    protected function filterNullValues(array $array): array
+    {
+        $result = [];
+        
+        foreach ($array as $key => $value) {
+            if ($value === null) {
+                continue;
+            }
+            
+            if (is_array($value)) {
+                $filteredArray = $this->filterNullValues($value);
+                if (!empty($filteredArray)) {
+                    $result[$key] = $filteredArray;
+                }
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        
+        return $result;
     }
 
     /**
