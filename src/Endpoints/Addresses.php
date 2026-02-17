@@ -15,6 +15,8 @@ class Addresses extends AbstractEndpoint
      * Lister les adresses
      *
      * @param array<string, mixed> $params
+     *   address:string - Filtrer par adresse,name:string - Filtrer par nom, 
+     *   contactName:string - Filtrer par nom de contact, type:string *required (sender,receiver,return)
      * @return array<int, Address>
      */
     public function list(array $params = []): array
@@ -47,7 +49,30 @@ class Addresses extends AbstractEndpoint
     /**
      * Créer ou modifier une adresse
      *
-     * @param array<string, mixed> $data
+     * @param array<string, mixed> $data{
+     * "addressId": "string",
+     * "name": "string",
+     * "contactName": "string",
+     * "contactInfo": "string",
+     * "email": "string",
+     * "phone": "string",
+     * "city": "string",
+     * "country": "string",
+     * "region": "string",
+     * "street": "string",
+     * "streetNo": "string",
+     * "flatNo": "string",
+     * "zip": "string",
+     * "pudoId": "string",
+     * "pudoAddress": "string",
+     * "pudoZip": "string",
+     * "pudoCountryCode": "string",
+     * "type": "sender",
+     * "defaultAddressesIds": [
+     *   "string"
+     * ],
+     * "isDefault": true
+     *}
      * @return Address
      */
     public function save(array $data): Address
@@ -76,7 +101,7 @@ class Addresses extends AbstractEndpoint
      */
     public function update(string $id, array $data): Address
     {
-        $data['id'] = $id;
+        $data['addressId'] = $id;
         return $this->save($data);
     }
 
@@ -89,6 +114,40 @@ class Addresses extends AbstractEndpoint
     public function deleteAddress(string $id): bool
     {
         $response = $this->delete("/addresses/delete/{$id}");
+        return $response->isSuccessful();
+    }
+    /**
+     * Supprimer plusieurs adresses
+     *
+     * @param array<string> $ids
+     * @return bool
+     */
+    public function deleteSelected(array $ids): bool
+    {
+        $response = $this->post('/addresses/delete', ['addressIds' => $ids]);
+        return $response->isSuccessful();
+    }
+
+    /**
+     * Télécharger un exemple de fichier d'adresses
+     *
+     * @return string URL du fichier d'exemple
+     */
+    public function downloadExample(): string
+    {
+        $response = $this->get('/addresses/download-example');
+        return $response->getData()['url'] ?? '';
+    }
+    /**
+     * Importer des adresses à partir d'un fichier Excel
+     *
+     * @param string $filePath Chemin vers le fichier Excel à importer
+     * @param string $addressType Type d'adresse (sender, receiver, return)
+     * @return bool Succès de l'importation
+     */
+    public function importFromExcel(string $filePath, string $addressType = 'sender'): bool
+    {
+        $response = $this->post('/addresses/import', ['file' => $filePath,'addressType' => $addressType]);
         return $response->isSuccessful();
     }
 }

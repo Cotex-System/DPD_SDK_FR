@@ -16,7 +16,7 @@ class Profile extends AbstractEndpoint
      */
     public function getProfile(): array
     {
-        $response = $this->get('/profile');
+        $response = $this->get('/profile/contact-info');
         return $response->getData();
     }
 
@@ -24,11 +24,17 @@ class Profile extends AbstractEndpoint
      * Mettre à jour le profil
      *
      * @param array<string, mixed> $data
+     * example value:
+     * {
+     *   "name": "John Doe",
+     *   "email": "john.doe@example.com",
+     *   "phone": "+1234567890"
+     * }
      * @return array<string, mixed>
      */
     public function update(array $data): array
     {
-        $response = $this->put('/profile', $data);
+        $response = $this->post('/profile/contact-info', $data);
         return $response->getData();
     }
 
@@ -37,9 +43,9 @@ class Profile extends AbstractEndpoint
      *
      * @return array<string, mixed>
      */
-    public function getSettings(): array
+    public function getData(): array
     {
-        $response = $this->get('/user/settings');
+        $response = $this->get('/user/data');
         return $response->getData();
     }
 
@@ -51,7 +57,24 @@ class Profile extends AbstractEndpoint
      */
     public function updateSettings(array $data): array
     {
-        $response = $this->put('/user/settings', $data);
+        $response = $this->post('/user/settings', $data);
+        return $response->getData();
+    }
+    /**
+     * Mettre à jour le mot de passe utilisateur
+     *
+     * @param array<string, mixed> $data
+     * example value:
+     * {
+     *   "oldPassword": "old_password",
+     *   "newPassword": "new_secure_password",
+     *  "repeatedPassword": "new_secure_password"
+     * }
+      * @return array<string, mixed>
+      */
+    public function updatePassword(array $data): array
+    {
+        $response = $this->post('/password', $data);
         return $response->getData();
     }
 }

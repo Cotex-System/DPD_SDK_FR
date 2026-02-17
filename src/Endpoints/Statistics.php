@@ -12,12 +12,11 @@ class Statistics extends AbstractEndpoint
     /**
      * Obtenir les statistiques d'envois
      *
-     * @param array<string, mixed> $params
      * @return array<string, mixed>
      */
-    public function getShipmentStats(array $params = []): array
+    public function getShipmentStats(): array
     {
-        $response = $this->get('/shipments/stats', $params);
+        $response = $this->get('/shipments/stats');
         return $response->getData();
     }
 

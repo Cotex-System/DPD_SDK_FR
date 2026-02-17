@@ -16,6 +16,21 @@ class Labels extends AbstractEndpoint
      * Créer des étiquettes pour des envois
      *
      * @param array<string, mixed> $data
+     *  Example value:
+     * {
+     *  "shipmentIds": [
+     *      "15731b0c-4118-11eb-8bd3-005056bbea5f"
+     *  ],
+     *  "parcelNumbers": [
+     *      "05757894762505"
+     *  ],
+     *  "offsetPosition": null,
+     *  "downloadLabel": true,
+     *  "emailLabel": true,
+     *  "labelFormat": null,
+     *  "paperSize": null,
+     *  "dpi": "203"
+     *}
      * @return Label
      */
     public function create(array $data): Label
@@ -28,6 +43,21 @@ class Labels extends AbstractEndpoint
      * Créer et imprimer des étiquettes
      *
      * @param array<string, mixed> $data
+     * Example value:
+     * {
+     *  "shipmentIds": [
+     *      "15731b0c-4118-11eb-8bd3-005056bbea5f"
+     *  ],
+     *  "parcelNumbers": [
+     *      "05757894762505"
+     *  ],
+     *  "offsetPosition": null,
+     *  "downloadLabel": true,
+     *  "emailLabel": true,
+     *  "labelFormat": null,
+     *  "paperSize": null,
+     *  "dpi": "203"
+     * }
      * @return Label
      */
     public function print(array $data): Label
@@ -38,7 +68,7 @@ class Labels extends AbstractEndpoint
 
     /**
      * Obtenir une étiquette spécifique pour un envoi client
-     *
+     * Deprecated
      * @param string $shipmentId
      * @param string $labelId
      * @return Label
@@ -51,7 +81,7 @@ class Labels extends AbstractEndpoint
 
     /**
      * Créer des étiquettes pour des envois clients
-     *
+     * Deprecated
      * @param array<string, mixed> $data
      * @return Label
      */

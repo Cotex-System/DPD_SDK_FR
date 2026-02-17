@@ -11,24 +11,23 @@ class Countries extends AbstractEndpoint
 {
     /**
      * Obtenir la liste des pays
-     *
+     * @param string $direction 'origin' ou 'destination' pour filtrer les pays d'origine ou de destination
      * @return array<string, mixed>
      */
-    public function list(): array
+    public function list(string $direction): array
     {
-        $response = $this->get('/countries');
+        $response = $this->get('/countries', ['direction' => $direction]);
         return $response->getData();
     }
 
     /**
-     * Obtenir un pays spécifique
+     * Obtenir la liste des pays avec points relais
      *
-     * @param string $countryCode
      * @return array<string, mixed>
      */
-    public function getByCode(string $countryCode): array
+    public function getLockerCountries(): array
     {
-        $response = $this->get("/countries/{$countryCode}");
+        $response = $this->get('/countries/lockers');
         return $response->getData();
     }
 
@@ -38,24 +37,11 @@ class Countries extends AbstractEndpoint
      * @param array<string, mixed> $params
      * @return array<string, mixed>
      */
-    public function searchCities(array $params): array
+    public function searchCities(string $countryCode): array
     {
-        $response = $this->get('/cities', $params);
+        $response = $this->get('/cities', ['countryCode' => $countryCode]);
         return $response->getData();
     }
 
-    /**
-     * Rechercher des villes par code postal
-     *
-     * @param string $postalCode
-     * @param string $countryCode
-     * @return array<string, mixed>
-     */
-    public function getCitiesByPostalCode(string $postalCode, string $countryCode = 'FR'): array
-    {
-        return $this->searchCities([
-            'postalCode' => $postalCode,
-            'countryCode' => $countryCode,
-        ]);
-    }
+
 }

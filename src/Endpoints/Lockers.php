@@ -15,6 +15,22 @@ class Lockers extends AbstractEndpoint
      * Rechercher des points relais
      *
      * @param array<string, mixed> $params
+     *  params awaited:
+     * countryCode: string (ex: 'FR') required
+     * id: string (ex: '12345') optional
+     * name: string (ex: 'DPD Pickup') optional
+     * search: string (ex: 'Paris') optional
+     * lockerType: Available values : PickupStation, ParcelShop (ex: 'PickupStation') optional
+     * distanceType: Available values : air, walking, driving (ex: 'driving') optional
+     * street: string (ex: '10 rue de la Paix') optional
+     * postalCode: string (ex: '75002') optional
+     * city: string (ex: 'Paris') optional
+     * order:Order by fields. Current possible orders: city, name, id. Example: name,city or city,name. Default: id
+     * radius: int (ex: 10) optional
+     * limit: int (ex: 10) optional
+     * startPointLatitude: float (ex: 48.8566) optional
+     * startPointLongitude: float (ex: 2.3522) optional
+     * lockerFeatures: array<string> Available values : consigneePickupAllowed, returnAllowed, expressAllowed, codAllowed, codPaymentType_cash, codPaymentType_cheque, codPaymentType_card (ex: '24/7') optional
      * @return array<int, Locker>
      */
     public function search(array $params): array
@@ -32,17 +48,6 @@ class Lockers extends AbstractEndpoint
         return $lockers;
     }
 
-    /**
-     * Obtenir un point relais par son ID
-     *
-     * @param string $id
-     * @return Locker
-     */
-    public function getLocker(string $id): Locker
-    {
-        $response = $this->get("/lockers/{$id}");
-        return new Locker($response->getData());
-    }
 
     /**
      * Rechercher des points relais par code postal
