@@ -11,7 +11,7 @@ use InvalidArgumentException;
 class GetShipmentTraceDTO extends ParentDTO
 {
     /**
-     * @var ?array<ShipmentTraceDTO>
+        * @var ?array<\DPD\Models\Trace\ShipmentTraceDTO>
      */
     public ?array $ShipmentTraces;
 

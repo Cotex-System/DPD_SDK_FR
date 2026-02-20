@@ -72,6 +72,13 @@ final class DPDClient
         );
 
         $this->traceEndpoint = new TraceEndpoint($this->traceGateway);
+
+        $userId = $resolved->userId();
+        $password = $resolved->password();
+
+        if ($userId !== null && $password !== null) {
+            $this->setCredentials($userId, $password);
+        }
     }
 
     /**
