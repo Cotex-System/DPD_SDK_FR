@@ -13,6 +13,7 @@
     "require": {
         "php": ">=8.0",
         "ext-json": "*",
+        "ext-soap": "*",
         "ext-curl": "*",
         "guzzlehttp/guzzle": "^7.5",
         "psr/log": "^3.0"
