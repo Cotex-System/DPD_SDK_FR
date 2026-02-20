@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DPD;
 
 use DPD\Config\Config;
+use DPD\Endpoints\TraceEndpoint;
 use DPD\Http\SoapGateway;
 use InvalidArgumentException;
 
@@ -41,6 +42,11 @@ final class DPDClient
     private SoapGateway $traceGateway;
 
     /**
+     * Endpoint Trace typé (Request DTO -> Response DTO).
+     */
+    private TraceEndpoint $traceEndpoint;
+
+    /**
      * @param array<string, mixed>|Config $config
      */
     public function __construct(array|Config $config = [])
@@ -64,6 +70,8 @@ final class DPDClient
             $options,
             $resolved->traceLocation()
         );
+
+        $this->traceEndpoint = new TraceEndpoint($this->traceGateway);
     }
 
     /**
@@ -80,6 +88,14 @@ final class DPDClient
     public function traceGateway(): SoapGateway
     {
         return $this->traceGateway;
+    }
+
+    /**
+     * Expose les opérations Trace typées via DTOs.
+     */
+    public function trace(): TraceEndpoint
+    {
+        return $this->traceEndpoint;
     }
 
     /**
