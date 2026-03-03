@@ -1,9 +1,10 @@
 <?php
-namespace App\Models\Request\EPrint;
+namespace DPD\Models\Request\EPrint;
 
 use DPD\Models\EPrint\Address\AddressDTO;
 use DPD\Models\EPrint\Address\AddressInfoDTO;
 use DPD\Models\EPrint\Labels\LabelTypeDTO;
+use DPD\Models\EPrint\Service\StdServicesDTO;
 use DPD\Models\ParentDTO;
 use InvalidArgumentException;
 
@@ -29,7 +30,7 @@ class CreateReverseInverseShipmentWithLabelsBcRequestDTO extends ParentDTO{
     public AddressDTO $shipperaddress;
     public ?AddressInfoDTO $shipperinfo;
     public ?AddressDTO $retourAddress;
-    public ?ReverseInverseServicesDTO $services;
+    public ?StdServicesDTO $services;
     /** @var string
      * Date au format JJ.MM.AAAA
      * Si non renseigné, la date d’expédition sera utilisée
@@ -71,7 +72,7 @@ class CreateReverseInverseShipmentWithLabelsBcRequestDTO extends ParentDTO{
         LabelTypeDTO $labelType,
         int $expire_offset,
         ?AddressDTO $retourAddress = null,
-        ?ReverseInverseServicesDTO $services = null,
+        ?StdServicesDTO $services = null,
         ?string $shippingdate = null,
         ?string $weight = null,
         ?string $referencenumber = null,
@@ -195,12 +196,12 @@ class CreateReverseInverseShipmentWithLabelsBcRequestDTO extends ParentDTO{
         return $this;
     }
 
-    public function getServices(): ?ReverseInverseServicesDTO
+    public function getServices(): ?StdServicesDTO
     {
         return $this->services;
     }
 
-    public function setServices(?ReverseInverseServicesDTO $services): self
+    public function setServices(?StdServicesDTO $services): self
     {
         $this->services = $services;
 

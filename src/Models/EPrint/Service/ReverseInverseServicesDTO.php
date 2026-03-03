@@ -4,5 +4,5 @@ use DPD\Models\ParentDTO;
 
 class ReverseInverseServicesDTO extends ParentDTO
 {
-    public ConsigneNotificationDTO $contact;
+    public StdServicesDTO $contact;
 }

@@ -4,6 +4,7 @@ namespace DPD\Models\Request\EPrint;
 
 use DPD\Models\EPrint\Address\AddressDTO;
 use DPD\Models\EPrint\Labels\LabelTypeDTO;
+use DPD\Models\EPrint\ReferenceInBarcodeDTO;
 use DPD\Models\EPrint\Service\RetourServicesDTO;
 use DPD\Models\EPrint\Service\ReverseDTO;
 use DPD\Models\ParentDTO;
@@ -23,7 +24,7 @@ class GetRetourLabelBcRequestDTO extends ParentDTO
     public LabelTypeDTO $labelType;
     public ?string $customLabelText;
 
-    public function __construct(string $countryCode, string $centerNumber, string $parcelnumber, ?bool $rfnrasbarcode = null, ?string $referenceInBarcode = null, ?RetourServicesDTO $services = null, ?string $weight = null, ?AddressDTO $shipperaddress = null, ?AddressDTO $receiveraddress = null, ?AddressDTO $overrideShipperLabelAddress = null, LabelTypeDTO $labelType, ?string $customLabelText = null)
+    public function __construct(string $countryCode, string $centerNumber, string $parcelnumber, ?bool $rfnrasbarcode = null, ?ReferenceInBarcodeDTO $referenceInBarcode = null, ?RetourServicesDTO $services = null, ?string $weight = null, ?AddressDTO $shipperaddress = null, ?AddressDTO $receiveraddress = null, ?AddressDTO $overrideShipperLabelAddress = null, LabelTypeDTO $labelType, ?string $customLabelText = null)
     {
         $this->countryCode = $countryCode;
         $this->centerNumber = $centerNumber;
@@ -55,7 +56,7 @@ class GetRetourLabelBcRequestDTO extends ParentDTO
     {
         return $this->rfnrasbarcode;
     }
-    public function getReferenceInBarcode(): ?string
+    public function getReferenceInBarcode(): ?ReferenceInBarcodeDTO
     {
         return $this->referenceInBarcode;
     }
@@ -108,7 +109,7 @@ class GetRetourLabelBcRequestDTO extends ParentDTO
         $this->rfnrasbarcode = $rfnrasbarcode;
         return $this;
     }
-    public function setReferenceInBarcode(?string $referenceInBarcode): self
+    public function setReferenceInBarcode(?ReferenceInBarcodeDTO $referenceInBarcode): self
     {
         $this->referenceInBarcode = $referenceInBarcode;
         return $this;

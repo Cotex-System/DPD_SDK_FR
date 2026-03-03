@@ -1,8 +1,11 @@
 <?php
+
 namespace DPD\Models\EPrint\Service;
 
 use DPD\Models\EPrint\Enum\ContactTypeEnum;
 use DPD\Models\ParentDTO;
+use DPD\Models\EPrint\Service\Secure;
+
 class ContactDTO extends ParentDTO
 {
     public ?string $sms;
@@ -24,51 +27,67 @@ class ContactDTO extends ParentDTO
      * Get the value of sms
      */
     public function getSms(): ?string
-    {        return $this->sms;
+    {
+        return $this->sms;
     }
     /**
      * Set the value of sms
      */    public function setSms(?string $sms): self
-    {        $this->sms = $sms;
-        return $this;  
+    {
+        $this->sms = $sms;
+        return $this;
     }
     /**
      * Get the value of email
      */
     public function getEmail(): ?string
-    {        return $this->email;}
+    {
+        return $this->email;
+    }
     /**
      * Set the value of email
      */    public function setEmail(?string $email): self
-    {        $this->email = $email;
-        return $this;   }
+    {
+        $this->email = $email;
+        return $this;
+    }
     /**
      * Get the value of autoText
      */    public function getAutoText(): ?string
-    {        return $this->autoText;    }
+    {
+        return $this->autoText;
+    }
     /**
      * Set the value of autoText
      */    public function setAutoText(?string $autoText): self
-    {        $this->autoText = $autoText;
-        return $this;    }
+    {
+        $this->autoText = $autoText;
+        return $this;
+    }
     /**
      * Get the value of type
      */    public function getType(): ?string
-    {        return $this->type;    }
+    {
+        return $this->type;
+    }
     /**     * Set the value of type
      */    public function setType(?string $type): self
     {
-        if($type !== null && !ContactTypeEnum::isValid($type)) {
+        if ($type !== null && !ContactTypeEnum::isValid($type)) {
             throw new \InvalidArgumentException("Invalid type value. Allowed values are: sms, email, autoText");
         }
         $this->type = $type;
         return $this;
     }
     /**     * Get the value of secureService
-     */    public function getsecureService(): ?Secure
-    {        return $this->secureService;    }
+     */    public function getSecureService(): ?Secure
+    {
+        return $this->secureService;
+    }
     /**     * Set the value of secureService
-     */    public function setsecureService(?Secure $secureService): self
-    {        $this->secureService = $secureService;
-        return $this;    }
+     */    public function setSecureService(?Secure $secureService): self
+    {
+        $this->secureService = $secureService;
+        return $this;
+    }
 }

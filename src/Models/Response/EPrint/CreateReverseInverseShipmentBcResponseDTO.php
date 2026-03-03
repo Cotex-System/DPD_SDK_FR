@@ -1,5 +1,5 @@
 <?php
-namespace App\Models\Response\EPrint;
+namespace DPD\Models\Response\EPrint;
 
 use DPD\Models\ParentDTO;
 

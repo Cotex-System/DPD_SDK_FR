@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Models\Request\EPrint;
+namespace DPD\Models\Request\EPrint;
 
 use DPD\Models\EPrint\Address\AddressDTO;
 use DPD\Models\EPrint\Address\AddressInfoDTO;
+use DPD\Models\EPrint\Service\StdServicesDTO;
 use DPD\Models\ParentDTO;
 use InvalidArgumentException;
 
@@ -51,10 +52,10 @@ class CreateReverseInverseShipmentBcRequestDTO extends ParentDTO
      */
     public ?AddressDTO $retourAddress;
 
-    /** @var ?ReverseInverseServicesDTO 
+    /** @var ?StdServicesDTO 
      * Services
     */
-    public ?ReverseInverseServicesDTO $services;
+    public ?StdServicesDTO $services;
 
     /** @var ?string
      * Poids en kg
@@ -92,7 +93,7 @@ class CreateReverseInverseShipmentBcRequestDTO extends ParentDTO
         ?AddressInfoDTO $shipperinfo,
         int $expire_offset,
         ?AddressDTO $retourAddress = null,
-        ?ReverseInverseServicesDTO $services = null,
+        ?StdServicesDTO $services = null,
         ?string $weight = null,
         ?string $shippingdate = null,
         ?string $referencenumber = null
@@ -211,12 +212,12 @@ class CreateReverseInverseShipmentBcRequestDTO extends ParentDTO
         return $this;
     }
 
-    public function getServices(): ?ReverseInverseServicesDTO
+    public function getServices(): ?StdServicesDTO
     {
         return $this->services;
     }
 
-    public function setServices(?ReverseInverseServicesDTO $services): self
+    public function setServices(?StdServicesDTO $services): self
     {
         $this->services = $services;
 

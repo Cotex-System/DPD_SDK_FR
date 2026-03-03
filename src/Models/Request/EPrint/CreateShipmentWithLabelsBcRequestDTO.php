@@ -1,9 +1,10 @@
 <?php
-namespace App\Models\Request\EPrint;
+namespace DPD\Models\Request\EPrint;
 
 use DPD\Models\EPrint\Address\AddressDTO;
 use DPD\Models\EPrint\Address\AddressInfoDTO;
 use DPD\Models\EPrint\Labels\LabelTypeDTO;
+use DPD\Models\EPrint\ReferenceInBarcodeDTO;
 use DPD\Models\EPrint\Service\StdServicesDTO;
 use DPD\Models\ParentDTO;
 use InvalidArgumentException;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DPD;
 
 use DPD\Config\Config;
+use DPD\Endpoints\EPrintEndpoint;
 use DPD\Endpoints\TraceEndpoint;
 use DPD\Http\SoapGateway;
 use InvalidArgumentException;
@@ -42,6 +43,11 @@ final class DPDClient
     private SoapGateway $traceGateway;
 
     /**
+        * Endpoint EPrint typé (Request DTO -> Response DTO).
+        */
+        private EPrintEndpoint $eprintEndpoint;
+
+        /**
      * Endpoint Trace typé (Request DTO -> Response DTO).
      */
     private TraceEndpoint $traceEndpoint;
@@ -71,6 +77,7 @@ final class DPDClient
             $resolved->traceLocation()
         );
 
+        $this->eprintEndpoint = new EPrintEndpoint($this->eprintGateway);
         $this->traceEndpoint = new TraceEndpoint($this->traceGateway);
 
         $userId = $resolved->userId();
@@ -95,6 +102,14 @@ final class DPDClient
     public function traceGateway(): SoapGateway
     {
         return $this->traceGateway;
+    }
+
+    /**
+     * Expose les opérations EPrint typées via DTOs.
+     */
+    public function eprint(): EPrintEndpoint
+    {
+        return $this->eprintEndpoint;
     }
 
     /**

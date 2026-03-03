@@ -28,8 +28,9 @@ class ParentDTO implements ArraySerializable
         }
 
         $data = static::normalizeInput($source);
-        $instance = new static();
-        $reflection = new ReflectionClass($instance);
+        $reflection = new ReflectionClass(static::class);
+        /** @var static $instance */
+        $instance = $reflection->newInstanceWithoutConstructor();
 
         foreach ($data as $property => $value) {
             if (!$reflection->hasProperty($property)) {
@@ -37,7 +38,7 @@ class ParentDTO implements ArraySerializable
             }
 
             $reflectionProperty = $reflection->getProperty($property);
-            $instance->{$property} = static::hydrateValue($reflectionProperty, $value);
+            $reflectionProperty->setValue($instance, static::hydrateValue($reflectionProperty, $value));
         }
 
         return $instance;
@@ -154,11 +155,30 @@ class ParentDTO implements ArraySerializable
     {
         $doc = $property->getDocComment() ?: '';
 
-        if (!preg_match('/array\s*<\s*([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\s*>/', $doc, $matches)) {
+        $elementClass = null;
+
+        if (preg_match('/array\s*<\s*([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\s*>/', $doc, $matches) === 1) {
+            $elementClass = $matches[1];
+        } elseif (
+            preg_match('/@var\s+([A-Za-z_\\\\][A-Za-z0-9_\\\\]*)\[\](?:\|null)?/', $doc, $matches) === 1
+        ) {
+            $elementClass = $matches[1];
+        }
+
+        if (!is_string($elementClass)) {
             return $items;
         }
 
-        $elementClass = $matches[1];
+        if (!class_exists($elementClass)) {
+            $namespace = $property->getDeclaringClass()->getNamespaceName();
+            if ($namespace !== '' && !str_contains($elementClass, '\\')) {
+                $candidate = $namespace . '\\' . $elementClass;
+                if (class_exists($candidate)) {
+                    $elementClass = $candidate;
+                }
+            }
+        }
+
         if (!class_exists($elementClass) || !is_subclass_of($elementClass, self::class)) {
             return $items;
         }

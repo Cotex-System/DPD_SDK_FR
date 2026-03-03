@@ -50,10 +50,10 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
      */
     public ?AddressInfoDTO $shipperinfo;
     /**
-     * @var CollectionRequestService|null
+     * @var StdServices[]|null
      * Services 
      */
-    public ?CollectionRequestService $services;
+    public ?array $services;
     /**
      * @var int
      * Nombre de colis
@@ -137,7 +137,7 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
         ?AddressInfoDTO $receiverinfo,
         AddressDTO $shipperaddress,
         ?AddressInfoDTO $shipperinfo,
-        ?CollectionRequestService $services,
+        ?array $services,
         int $parcel_count,
         string $pickup_date,
         ?string $time_from = null,
@@ -260,12 +260,12 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
         return $this;
     }
 
-    public function getServices(): ?CollectionRequestService
+    public function getServices(): ?array
     {
         return $this->services;
     }
 
-    public function setServices(?CollectionRequestService $services): self
+    public function setServices(?array $services): self
     {
         $this->services = $services;
 

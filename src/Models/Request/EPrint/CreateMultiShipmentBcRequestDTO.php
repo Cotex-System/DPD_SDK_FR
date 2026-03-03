@@ -1,5 +1,5 @@
 <?php
-namespace App\Models\Request\EPrint;
+namespace DPD\Models\Request\EPrint;
 
 use DPD\Models\EPrint\Address\AddressDTO;
 use DPD\Models\EPrint\Address\AddressInfoDTO;
