@@ -1,22 +1,22 @@
-# DPD France SDK (reconstruction)
+# DPD France SDK (PHP)
 
-SDK PHP minimal pour démarrer une nouvelle base autour des webservices SOAP DPD France.
+SDK PHP pour les webservices SOAP DPD France avec DTOs typés pour EPrint (expédition/étiquettes) et Trace (suivi).
 
-## État actuel
+## Fonctionnalités
 
-Le core est en place avec :
+- Client unique: `DPD\DPDClient`
+- Endpoints typés:
+  - `eprint()` via `DPD\Endpoints\EPrintEndpoint`
+  - `trace()` via `DPD\Endpoints\TraceEndpoint`
+- Configuration centralisée via `DPD\Config\Config`
+- Appels SOAP encapsulés via `DPD\Http\SoapGateway`
+- Requêtes/réponses typées avec DTOs (`src/Models/Request`, `src/Models/Response`)
+- Jeux de tests unitaires, d’intégration et live
 
-- client principal `DPDClient`
-- configuration centralisée `DPD\Config\Config`
-- gateway SOAP `DPD\Http\SoapGateway`
-- endpoint étiquetage `DPD\Endpoints\EPrintEndpoint`
-- endpoint suivi `DPD\Endpoints\WebtraceEndpoint`
-- exceptions de base transport/runtime
+## Prérequis
 
-## Endpoints sources
-
-- EPrint: https://e-station-testenv.cargonet.software/eprintwebservice/eprintwebservice.asmx
-- Webtrace: https://e-station-testenv.cargonet.software/trace-service/Webtrace_Service.asmx
+- PHP >= 8.0
+- Extensions PHP: `soap`, `json`, `curl`
 
 ## Installation
 
@@ -24,70 +24,93 @@ Le core est en place avec :
 composer install
 ```
 
-## Utilisation rapide
+## Configuration
+
+Le SDK lit la configuration depuis:
+
+1) le tableau passé à `new Config([...])` (prioritaire)
+2) les variables d’environnement
+3) les valeurs par défaut testenv
+
+Variables principales:
+
+- `DPD_ENV` (`test` ou `prod`)
+- `DPD_TEST_USERID` / `DPD_TEST_PASSWORD`
+- `DPD_PROD_USERID` / `DPD_PROD_PASSWORD`
+- `DPD_TEST_EPRINT_WSDL` / `DPD_TEST_TRACE_WSDL`
+- `DPD_TEST_EPRINT_LOCATION` / `DPD_TEST_TRACE_LOCATION`
+
+Un template complet est disponible dans `.env.example`.
+
+## Démarrage rapide
 
 ```php
 <?php
 
-require 'vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
+use DPD\Config\Config;
 use DPD\DPDClient;
 
-$client = new DPDClient();
+$client = new DPDClient(new Config());
 
-// Ping eprint
-$isAlive = $client->eprint()->isAlive();
+// Ping EPrint
+$alive = $client->eprint()->isAlive();
 
-// Appel explicite
-$trace = $client->webtrace()->getLastTrace([
-    'parcelNumber' => '12345678901234',
-]);
-
-// Appel générique d'une opération non encore mappée
-$custom = $client->eprint()->CreateShipmentWithLabels([
-    // payload SOAP selon la doc DPD
-]);
+// Ping Trace
+$traceAlive = $client->trace()->isAlive();
 ```
 
-## Configuration
+## Exemples disponibles
 
-```php
-$client = new DPDClient([
-    'eprint_wsdl' => 'https://.../eprintwebservice.asmx?WSDL',
-    'trace_wsdl' => 'https://.../Webtrace_Service.asmx?WSDL',
-    'eprint_location' => 'https://.../eprintwebservice.asmx',
-    'trace_location' => 'https://.../Webtrace_Service.asmx',
-    'connection_timeout' => 20,
-    'soap_options' => [
-        'trace' => true,
-        'exceptions' => true,
-    ],
-]);
+- `php examples/trace_dto_usage.php <shipmentNumber> [countryCode] [centerNumber] [customerNumber]`
+- `php examples/eprint_live_complete.php`
+- `php examples/trace_live_complete.php [shipmentNumber] [parcel] [reference]`
+
+Les scripts `*_live_complete.php` reprennent des flows proches des tests live (création, lecture, labels, trace).
+
+## Tests
+
+Lancer tous les tests:
+
+```bash
+composer test
 ```
 
-## Exemples
+Lancer uniquement EPrint live:
 
-- `php examples/eprint_ping.php`
-- `php examples/trace_last.php <parcel_number>`
+```bash
+./vendor/bin/phpunit --filter EPrintEndpointLiveTest
+```
 
-## Détails endpoints eprint
+Lancer uniquement Trace live:
 
-- Documentation générée avec exemples request/response: `docs/eprint-operation-examples.md`
+```bash
+./vendor/bin/phpunit --filter TraceEndpointLiveTest
+```
 
-## Détails endpoints webtrace
+Afficher les tests skipés:
 
-- Documentation générée avec exemples request/response: `docs/webtrace-operation-examples.md`
+```bash
+./vendor/bin/phpunit --filter EPrintEndpointLiveTest --log-junit build/junit-eprint-live.xml
+```
 
-## Modèle GeoLabel (doc 02/2026)
+## Documentation SOAP embarquée
 
-- Service métier: `DPDClient::geoLabel()` (`src/Services/GeoLabelService.php`)
-- Catalogue services livraison + codes étiquette selon poids: `src/Models/GeoLabel/DeliveryServiceCatalog.php`
-- Matrice flux/méthodes: `src/Models/GeoLabel/ServiceMatrix.php`
-- Catalogue pays ISO + contraintes code postal: `src/Models/GeoLabel/CountryCatalog.php`
-- Enums métier: `src/Models/GeoLabel/Enum/*`
-- DTO options GeoLabel: `src/Models/Request/GeoLabel/*`
-- Exemple: `php examples/geolabel_context.php`
+- `docs/eprint-operation-examples.md`
+- `docs/webtrace-operation-examples.md`
 
-## Prochaine étape
+## Structure utile
 
-Mapper progressivement les opérations avec DTOs typés à partir des deux PDFs officiels (GeoLabel + suivi), section par section.
+- `src/DPDClient.php`
+- `src/Config/Config.php`
+- `src/Endpoints/EPrintEndpoint.php`
+- `src/Endpoints/TraceEndpoint.php`
+- `src/Models/Request/*`
+- `src/Models/Response/*`
+- `tests/`
+
+## Notes
+
+- Les tests live dépendent des permissions et données disponibles côté DPD (certaines opérations peuvent être skipées selon le contexte compte/environnement).
+- Les endpoints et formats SOAP ont des variantes de payload; les DTOs et mappings ont été ajustés pour les formes observées en testenv.
