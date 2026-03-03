@@ -15,7 +15,7 @@ final class Config
      * @param array<string, mixed> $values
      */
     public function __construct(
-        private readonly array $values = []
+        private array $values = []
     ) {
     }
 

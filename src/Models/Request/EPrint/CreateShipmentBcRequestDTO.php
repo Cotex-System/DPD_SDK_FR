@@ -60,7 +60,7 @@ class CreateShipmentBcRequestDTO extends ParentDTO{
      * limiter à 6.2 (6 chiffres dont 2 après la virgule)
      * limite à 9 caractères
      */
-    public string $weigth;
+    public string $weight;
      /** 
       * @var string
       * Référence de l’expédition

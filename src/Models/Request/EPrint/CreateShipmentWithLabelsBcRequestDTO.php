@@ -68,7 +68,7 @@ class CreateShipmentWithLabelsBcRequestDTO extends ParentDTO{
      * limiter à 6.2 (6 chiffres dont 2 après la virgule)
      * limite à 9 caractères
      */
-    public string $weigth;
+    public string $weight;
      /** 
       * @var string
       * Référence de l’expédition
@@ -128,7 +128,7 @@ class CreateShipmentWithLabelsBcRequestDTO extends ParentDTO{
       ?AddressInfoDTO $receiverinfo,
       AddressDTO $shipperaddress,
       ?AddressInfoDTO $shipperinfo,
-      string $weigth,
+      string $weight,
       string $referencenumber,
       LabelTypeDTO $labelType,
       ?AddressDTO $retourAddress = null,
@@ -148,7 +148,7 @@ class CreateShipmentWithLabelsBcRequestDTO extends ParentDTO{
       $this->setReceiverinfo($receiverinfo);
       $this->setShipperaddress($shipperaddress);
       $this->setShipperinfo($shipperinfo);
-      $this->setWeigth($weigth);
+      $this->setweight($weight);
       $this->setReferencenumber($referencenumber);
       $this->setLabelType($labelType);
       $this->setRetourAddress($retourAddress);
@@ -285,22 +285,22 @@ class CreateShipmentWithLabelsBcRequestDTO extends ParentDTO{
       return $this;
     }
 
-    public function getWeigth(): string
+    public function getweight(): string
     {
-      return $this->weigth;
+      return $this->weight;
     }
 
-    public function setWeigth(string $weigth): self
+    public function setweight(string $weight): self
     {
-      if (strlen($weigth) > 9) {
-        throw new InvalidArgumentException('weigth ne doit pas dépasser 9 caractères.');
+      if (strlen($weight) > 9) {
+        throw new InvalidArgumentException('weight ne doit pas dépasser 9 caractères.');
       }
 
-      if (!preg_match('/^\d{1,6}([.,]\d{1,2})?$/', $weigth)) {
-        throw new InvalidArgumentException('weigth doit respecter le format 6.2 (jusqu\'à 6 chiffres avant et 2 après séparateur).');
+      if (!preg_match('/^\d{1,6}([.,]\d{1,2})?$/', $weight)) {
+        throw new InvalidArgumentException('weight doit respecter le format 6.2 (jusqu\'à 6 chiffres avant et 2 après séparateur).');
       }
 
-      $this->weigth = $weigth;
+      $this->weight = $weight;
 
       return $this;
     }

@@ -11,6 +11,9 @@ class ContactDTO extends ParentDTO
     public ?string $sms;
     public ?string $email;
     public ?string $autoText;
+    /** @var string|null $type Type de contact (sms, email, autoText)
+     * @see ContactTypeEnum
+     */
     public ?string $type;
     public ?Secure $secureService;
 
@@ -19,7 +22,7 @@ class ContactDTO extends ParentDTO
         $this->sms = $sms;
         $this->email = $email;
         $this->autoText = $autoText;
-        $this->type = $type;
+        $this->setType($type);
         $this->secureService = $secureService;
     }
 

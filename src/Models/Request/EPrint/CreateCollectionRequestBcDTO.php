@@ -66,7 +66,7 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
      * limitée à 10 caractères
      * jj.mm.aaaa
      */
-    public string $pickup_date;
+    public string $pick_date;
     /**
      * @var string|null
      * Heure d’enlèvement 
@@ -139,7 +139,7 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
         ?AddressInfoDTO $shipperinfo,
         ?array $services,
         int $parcel_count,
-        string $pickup_date,
+        string $pick_date,
         ?string $time_from = null,
         ?string $time_to = null,
         ?string $remark = null,
@@ -160,7 +160,7 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
         $this->setShipperinfo($shipperinfo);
         $this->setServices($services);
         $this->setParcelCount($parcel_count);
-        $this->setPickupDate($pickup_date);
+        $this->setPickDate($pick_date);
         $this->setTimeFrom($time_from);
         $this->setTimeTo($time_to);
         $this->setRemark($remark);
@@ -285,22 +285,22 @@ class CreateCollectionRequestBcDTO extends ParentDTO{
         return $this;
     }
 
-    public function getPickupDate(): string
+    public function getPickDate(): string
     {
-        return $this->pickup_date;
+        return $this->pick_date;
     }
 
-    public function setPickupDate(string $pickup_date): self
+    public function setPickDate(string $pick_date): self
     {
-        if (strlen($pickup_date) > 10) {
-            throw new InvalidArgumentException('pickup_date ne doit pas dépasser 10 caractères.');
+        if (strlen($pick_date) > 10) {
+            throw new InvalidArgumentException('pick_date ne doit pas dépasser 10 caractères.');
         }
 
-        if (!preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $pickup_date)) {
-            throw new InvalidArgumentException('pickup_date doit être au format jj.mm.aaaa.');
+        if (!preg_match('/^\d{2}\.\d{2}\.\d{4}$/', $pick_date)) {
+            throw new InvalidArgumentException('pick_date doit être au format jj.mm.aaaa.');
         }
 
-        $this->pickup_date = $pickup_date;
+        $this->pick_date = $pick_date;
 
         return $this;
     }

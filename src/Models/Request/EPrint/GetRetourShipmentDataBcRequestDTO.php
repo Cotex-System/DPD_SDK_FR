@@ -23,13 +23,32 @@ class GetRetourShipmentDataBcRequestDTO extends ParentDTO{
      * limite à 28 caractères
      */
     public string $originalBarcode;
+    /**
+     * @var int|null
+     * Source du barcode original
+     */
+    public ?int $originalBarcodeSource = null;
+    /**
+     * @var string|null
+     * Identifiant du barcode original
+     */
+    public ?string $originalBarcodeId = null;
 
-    public function __construct(int $countryCode, int $centerNumber, int $number, string $originalBarcode)
+    public function __construct(
+        int $countryCode,
+        int $centerNumber,
+        int $number,
+        string $originalBarcode,
+        ?int $originalBarcodeSource = null,
+        ?string $originalBarcodeId = null
+    )
     {
         $this->setCountryCode($countryCode);
         $this->setCenterNumber($centerNumber);
         $this->setNumber($number);
         $this->setOriginalBarcode($originalBarcode);
+        $this->setOriginalBarcodeSource($originalBarcodeSource);
+        $this->setOriginalBarcodeId($originalBarcodeId);
     }
 
     public function getCountryCode(): int
@@ -82,5 +101,51 @@ class GetRetourShipmentDataBcRequestDTO extends ParentDTO{
         }
         $this->originalBarcode = $originalBarcode;
         return $this;
+    }
+
+    public function getOriginalBarcodeSource(): ?int
+    {
+        return $this->originalBarcodeSource;
+    }
+
+    public function setOriginalBarcodeSource(?int $originalBarcodeSource): self
+    {
+        $this->originalBarcodeSource = $originalBarcodeSource;
+        return $this;
+    }
+
+    public function getOriginalBarcodeId(): ?string
+    {
+        return $this->originalBarcodeId;
+    }
+
+    public function setOriginalBarcodeId(?string $originalBarcodeId): self
+    {
+        $this->originalBarcodeId = $originalBarcodeId;
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        $request = [
+            'customer' => [
+                'countrycode' => $this->countryCode,
+                'centernumber' => $this->centerNumber,
+                'number' => $this->number,
+            ],
+            'originalBarcode' => $this->originalBarcode,
+            'originalBarcodeSource' => $this->originalBarcodeSource,
+            'originalBarcodeId' => $this->originalBarcodeId,
+        ];
+
+        if ($request['originalBarcodeSource'] === null) {
+            unset($request['originalBarcodeSource']);
+        }
+
+        if ($request['originalBarcodeId'] === null || $request['originalBarcodeId'] === '') {
+            unset($request['originalBarcodeId']);
+        }
+
+        return $request;
     }
 }

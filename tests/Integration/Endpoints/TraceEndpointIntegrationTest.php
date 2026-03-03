@@ -198,6 +198,7 @@ final class TraceEndpointIntegrationTest extends TestCase
         $gateway = $reflection->newInstanceWithoutConstructor();
 
         $clientProperty = $reflection->getProperty('client');
+        $clientProperty->setAccessible(true);
         $clientProperty->setValue($gateway, $soapClient);
 
         return [new TraceEndpoint($gateway), $soapClient];

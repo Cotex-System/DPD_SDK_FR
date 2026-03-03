@@ -5,16 +5,16 @@ use DPD\Models\EPrint\Service\SlaveServicesDTO;
 
 class SlaveRequestDTO extends ParentDTO
 {
-    public string $weigth;
+    public string $weight;
     public string $referencenumber;
     public ?string $reference2;
     public ?string $reference3;
     public ?string $reference4;
     public SlaveServicesDTO $services;
 
-    public function __construct(string $weigth, string $referencenumber, ?string $reference2, ?string $reference3, ?string $reference4, SlaveServicesDTO $services)
+    public function __construct(string $weight, string $referencenumber, ?string $reference2, ?string $reference3, ?string $reference4, SlaveServicesDTO $services)
     {
-        $this->weigth = $weigth;
+        $this->weight = $weight;
         $this->referencenumber = $referencenumber;
         $this->reference2 = $reference2;
         $this->reference3 = $reference3;
@@ -22,9 +22,9 @@ class SlaveRequestDTO extends ParentDTO
         $this->services = $services;
     }
 
-    public function getWeigth(): string
+    public function getweight(): string
     {
-        return $this->weigth;
+        return $this->weight;
     }
     public function getReferencenumber(): string
     {

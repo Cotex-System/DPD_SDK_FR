@@ -38,6 +38,9 @@ class ParentDTO implements ArraySerializable
             }
 
             $reflectionProperty = $reflection->getProperty($property);
+            if (!$reflectionProperty->isPublic()) {
+                $reflectionProperty->setAccessible(true);
+            }
             $reflectionProperty->setValue($instance, static::hydrateValue($reflectionProperty, $value));
         }
 
@@ -79,14 +82,20 @@ class ParentDTO implements ArraySerializable
     {
         $array = [];
         foreach ($this as $key => $value) {
+            $normalizedKey = match ($key) {
+                'weigth' => 'weight',
+                'postalCode' => 'zipCode',
+                'refnrasbarcode' => 'refasbarcode',
+                default => $key,
+            };
             if ($value instanceof ArraySerializable) {
-                $array[$key] = $value->toArray();
+                $array[$normalizedKey] = $value->toArray();
             } elseif (is_array($value)) {
-                $array[$key] = array_map(function ($item) {
+                $array[$normalizedKey] = array_map(function ($item) {
                     return $item instanceof ArraySerializable ? $item->toArray() : $item;
                 }, $value);
             } else {
-                $array[$key] = $value;
+                $array[$normalizedKey] = $value;
             }
         }
         return $array;
@@ -130,8 +139,17 @@ class ParentDTO implements ArraySerializable
         }
 
         if ($type->isBuiltin()) {
-            if ($type->getName() === 'array' && is_array($value)) {
-                return static::hydrateArrayItems($property, $value);
+            if ($type->getName() === 'array') {
+                if (is_array($value)) {
+                    return static::hydrateArrayItems($property, $value);
+                }
+
+                if (is_object($value)) {
+                    /** @var array<mixed> $items */
+                    $items = get_object_vars($value);
+
+                    return static::hydrateArrayItems($property, $items);
+                }
             }
 
             return $value;

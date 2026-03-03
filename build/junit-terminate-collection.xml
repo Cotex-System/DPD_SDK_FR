@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="1" time="0.300768">
+    <testsuite name="DPD SDK Test Suite" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="1" time="0.300768">
+      <testsuite name="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" tests="1" assertions="1" errors="0" warnings="0" failures="0" skipped="1" time="0.300768">
+        <testcase name="testTerminateCollectionRequestWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="485" assertions="1" time="0.300768">
+          <skipped/>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

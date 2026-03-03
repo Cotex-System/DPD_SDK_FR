@@ -156,4 +156,14 @@ class GetShipmentTraceByReferenceDTO extends ParentDTO
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        $data = parent::toArray();
+
+        $data['Searchmode'] = $data['ReferenceSearchMode'] ?? ReferenceSearchModeEnum::Equals;
+        unset($data['ReferenceSearchMode']);
+
+        return $data;
+    }
 }

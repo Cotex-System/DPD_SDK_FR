@@ -7,7 +7,7 @@ class CreateCollectionRequestBcResponseDTO extends ParentDTO{
     /**
      * @var ShipmentDTO[]|null
      */
-    private ?array $ShipmentBC;
+    private ?array $ShipmentBC = null;
 
     public function __construct(?array $ShipmentBC = null)
     {
@@ -23,5 +23,33 @@ class CreateCollectionRequestBcResponseDTO extends ParentDTO{
     {
         $this->ShipmentBC = $ShipmentBC;
         return $this;
+    }
+
+    /**
+     * @param array<string, mixed>|object|string|null $source
+     */
+    public static function from(array|object|string|null $source): static
+    {
+        $dto = parent::from($source);
+
+        if (is_object($source)) {
+            $source = get_object_vars($source);
+        }
+
+        if (!is_array($source)) {
+            return $dto;
+        }
+
+        $shipment = $source['ShipmentBC'] ?? $source['ShipmentBc'] ?? $source['shipmentBC'] ?? $source['shipmentBc'] ?? null;
+
+        if (is_object($shipment)) {
+            $shipment = get_object_vars($shipment);
+        }
+
+        if (is_array($shipment)) {
+            $dto->ShipmentBC = $shipment;
+        }
+
+        return $dto;
     }
 }

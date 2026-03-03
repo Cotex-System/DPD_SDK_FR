@@ -15,6 +15,46 @@ class GetShipmentTraceByReferenceDTO extends ParentDTO{
     public array $ShipmentTraces;
 
     /**
+     * @param array<string, mixed>|object|string|null $source
+     */
+    public static function from(array|object|string|null $source): static
+    {
+        if ($source === null) {
+            return new static([]);
+        }
+
+        if (is_string($source)) {
+            $decoded = json_decode($source, true);
+            $source = is_array($decoded) ? $decoded : [];
+        }
+
+        if (is_object($source)) {
+            $source = get_object_vars($source);
+        }
+
+        if (!is_array($source)) {
+            return new static([]);
+        }
+
+        $traces = $source['ShipmentTraces'] ?? $source['ShipmentTrace'] ?? [];
+
+        if (is_object($traces)) {
+            $traces = get_object_vars($traces);
+        }
+
+        if (!is_array($traces)) {
+            return new static([]);
+        }
+
+        $isList = array_keys($traces) === range(0, count($traces) - 1);
+        if (!$isList && $traces !== []) {
+            $traces = [$traces];
+        }
+
+        return new static($traces);
+    }
+
+    /**
      * @param array<ShipmentTraceDTO|array<string, mixed>|object|string> $ShipmentTraces
      */
     public function __construct(array $ShipmentTraces = [])

@@ -20,7 +20,7 @@ use DPD\Models\Request\EPrint\GetShipmentBCRequestDTO;
 use DPD\Models\Request\EPrint\GetShippingRequestDTO;
 use DPD\Models\Request\EPrint\IsDeliverableOnDateRequestDTO;
 use DPD\Models\Request\EPrint\IsPickableOnDateRequestDTO;
-use DPD\Models\Request\EPrint\TerminateCollectionRequestDTO;
+use DPD\Models\Request\EPrint\TerminateCollectionRequestBcDTO;
 use DPD\Models\Request\EPrint\TerminateShipmentRequestDTO;
 use DPD\Models\Request\EPrint\UpdateServiceNoticeRequestDTO;
 use DPD\Models\Response\EPrint\CreateCollectionRequestBcResponseDTO;
@@ -28,6 +28,7 @@ use DPD\Models\Response\EPrint\CreateMultiShipmentBcResponseDTO;
 use DPD\Models\Response\EPrint\CreatePickupAtCustomerBcResponseDTO;
 use DPD\Models\Response\EPrint\CreateReverseInverseShipmentBcResponseDTO;
 use DPD\Models\Response\EPrint\CreateReverseInverseShipmentWithLabelsBcResponseDTO;
+use DPD\Models\Response\EPrint\CreateShipmentBcResponseDTO;
 use DPD\Models\Response\EPrint\CreateShipmentWithLabelsBcResponseDTO;
 use DPD\Models\Response\EPrint\GetLabelBcResponseDTO;
 use DPD\Models\Response\EPrint\GetNoticeAnswersResponseDTO;
@@ -81,18 +82,18 @@ final class EPrintEndpoint extends AbstractEndpoint
     ): CreateReverseInverseShipmentWithLabelsBcResponseDTO {
         /** @var mixed $raw */
         $raw = $this->call('CreateReverseInverseShipmentWithLabelsBc', ['request' => $request->toArray()]);
-
+        
         return CreateReverseInverseShipmentWithLabelsBcResponseDTO::from(
             $this->extractOperationPayload($raw, 'CreateReverseInverseShipmentWithLabelsBc')
         );
     }
 
-    /**
-     * @return mixed
-     */
-    public function createShipmentBc(CreateShipmentBcRequestDTO $request): mixed
+    public function createShipmentBc(CreateShipmentBcRequestDTO $request): CreateShipmentBcResponseDTO
     {
-        return $this->call('CreateShipmentBc', ['request' => $request->toArray()]);
+        /** @var mixed $raw */
+        $raw = $this->call('CreateShipmentBc', ['request' => $request->toArray()]);
+
+        return CreateShipmentBcResponseDTO::from($this->extractOperationPayload($raw, 'CreateShipmentBc'));
     }
 
     public function createShipmentWithLabelsBc(
@@ -100,7 +101,7 @@ final class EPrintEndpoint extends AbstractEndpoint
     ): CreateShipmentWithLabelsBcResponseDTO {
         /** @var mixed $raw */
         $raw = $this->call('CreateShipmentWithLabelsBc', ['request' => $request->toArray()]);
-
+        
         return CreateShipmentWithLabelsBcResponseDTO::from(
             $this->extractOperationPayload($raw, 'CreateShipmentWithLabelsBc')
         );
@@ -183,9 +184,9 @@ final class EPrintEndpoint extends AbstractEndpoint
     /**
      * @return mixed
      */
-    public function terminateCollectionRequest(TerminateCollectionRequestDTO $request): mixed
+    public function terminateCollectionRequestBc(TerminateCollectionRequestBcDTO $request): mixed
     {
-        return $this->call('TerminateCollectionRequest', ['request' => $request->toArray()]);
+        return $this->call('TerminateCollectionRequestBc', ['request' => $request->toArray()]);
     }
 
     /**

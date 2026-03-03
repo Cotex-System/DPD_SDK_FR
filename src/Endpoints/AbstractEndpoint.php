@@ -9,9 +9,12 @@ use InvalidArgumentException;
 
 abstract class AbstractEndpoint
 {
+    protected SoapGateway $gateway;
+
     public function __construct(
-        protected readonly SoapGateway $gateway
+        SoapGateway $gateway
     ) {
+        $this->gateway = $gateway;
     }
 
     /**

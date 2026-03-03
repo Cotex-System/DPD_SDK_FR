@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="" tests="21" assertions="58" errors="0" warnings="0" failures="0" skipped="7" time="2.383294">
+    <testsuite name="DPD SDK Test Suite" tests="21" assertions="58" errors="0" warnings="0" failures="0" skipped="7" time="2.383294">
+      <testsuite name="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" tests="21" assertions="58" errors="0" warnings="0" failures="0" skipped="7" time="2.383294">
+        <testcase name="testIsAliveSmoke" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="77" assertions="2" time="0.140939"/>
+        <testcase name="testGetInfoSmoke" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="86" assertions="2" time="0.036361"/>
+        <testcase name="testGetServiceNoticesWithCustomerContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="105" assertions="1" time="0.040671">
+          <skipped/>
+        </testcase>
+        <testcase name="testGetShippingWithCustomerContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="122" assertions="4" time="0.323210"/>
+        <testcase name="testCreateShipmentBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="141" assertions="5" time="0.065046"/>
+        <testcase name="testCreateShipmentWithLabelsBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="157" assertions="7" time="0.333273"/>
+        <testcase name="testCreateMultiShipmentBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="174" assertions="6" time="0.090138"/>
+        <testcase name="testGetShipmentBcFromCreatedShipmentHydratesDto" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="190" assertions="3" time="0.036364"/>
+        <testcase name="testGetLabelBcFromCreatedShipmentHydratesDto" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="216" assertions="5" time="0.320857"/>
+        <testcase name="testCreateCollectionRequestBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="246" assertions="3" time="0.050174"/>
+        <testcase name="testCreatePickupAtCustomerBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="282" assertions="3" time="0.043429"/>
+        <testcase name="testCreateReverseInverseShipmentBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="303" assertions="3" time="0.074440"/>
+        <testcase name="testCreateReverseInverseShipmentWithLabelsBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="335" assertions="4" time="0.563263"/>
+        <testcase name="testGetServiceNoticeAnswersWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="371" assertions="1" time="0.047654">
+          <skipped/>
+        </testcase>
+        <testcase name="testGetRetourLabelBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="386" assertions="1" time="0.036435">
+          <skipped/>
+        </testcase>
+        <testcase name="testGetRetourShipmentDataBcWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="424" assertions="1" time="0.029478">
+          <skipped/>
+        </testcase>
+        <testcase name="testIsDeliverableOnDateWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="452" assertions="1" time="0.041320">
+          <skipped/>
+        </testcase>
+        <testcase name="testIsPickableOnDateWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="469" assertions="2" time="0.035623"/>
+        <testcase name="testTerminateCollectionRequestWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="486" assertions="1" time="0.000087">
+          <skipped/>
+        </testcase>
+        <testcase name="testTerminateShipmentWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="508" assertions="2" time="0.035108"/>
+        <testcase name="testUpdateServiceNoticeWithBusinessContext" class="DPD\Tests\Integration\Live\EPrintEndpointLiveTest" classname="DPD.Tests.Integration.Live.EPrintEndpointLiveTest" file="/home/vivien/test-dev/DPD_SDK_FR/tests/Integration/Live/EPrintEndpointLiveTest.php" line="529" assertions="1" time="0.039425">
+          <skipped/>
+        </testcase>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>

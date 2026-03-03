@@ -7,24 +7,24 @@ use DPD\Models\EPrint\Service\ContactDTO;
 use DPD\Models\ParentDTO;
 
 class GetShipmentBcResponseDTO extends ParentDTO{
-    private ?string $countrycode;
-    private ?string $centernumber;
-    private ?string $parcelnumber;
-    private ?string $customer_centernumber;
-    private ?string $weight;
-    private ?string $referencenumber;
-    private ?string $reference2;
-    private ?string $reference3;
-    private ?AddressDTO $shipperaddress;
-    private ?AddressDTO $receiveraddress;
-    private ?AddressDTO $customeraddress;
-    private ?ContactDTO $contact;
-    private ?AddressInfoDTO $addressInfo;
-    private ?string $pickup_remark;
-    private ?string $delivery_remark;
-    private ?string $Barcode;
-    private ?string $BarcodeSource;
-    private ?string $BarcodeId;
+    private ?string $countrycode = null;
+    private ?string $centernumber = null;
+    private ?string $parcelnumber = null;
+    private ?string $customer_centernumber = null;
+    private ?string $weight = null;
+    private ?string $referencenumber = null;
+    private ?string $reference2 = null;
+    private ?string $reference3 = null;
+    private ?AddressDTO $shipperaddress = null;
+    private ?AddressDTO $receiveraddress = null;
+    private ?AddressDTO $customeraddress = null;
+    private ?ContactDTO $contact = null;
+    private ?AddressInfoDTO $addressInfo = null;
+    private ?string $pickup_remark = null;
+    private ?string $delivery_remark = null;
+    private ?string $Barcode = null;
+    private ?string $BarcodeSource = null;
+    private ?string $BarcodeId = null;
 
     public function __construct(?string $countrycode = null, ?string $centernumber = null, ?string $parcelnumber = null, ?string $customer_centernumber = null, ?string $weight = null, ?string $referencenumber = null, ?string $reference2 = null, ?string $reference3 = null, ?AddressDTO $shipperaddress = null, ?AddressDTO $receiveraddress = null, ?AddressDTO $customeraddress = null, ?ContactDTO $contact = null, ?AddressInfoDTO $addressInfo = null, ?string $pickup_remark = null, ?string $delivery_remark = null, ?string $Barcode = null, ?string $BarcodeSource = null, ?string $BarcodeId = null)
     {

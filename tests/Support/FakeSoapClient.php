@@ -16,8 +16,14 @@ final class FakeSoapClient extends SoapClient
     /**
      * @param array<string, mixed> $responses
      */
-    public function __construct(private readonly array $responses = [])
+    private array $responses;
+
+    /**
+     * @param array<string, mixed> $responses
+     */
+    public function __construct(array $responses = [])
     {
+        $this->responses = $responses;
     }
 
     /**
