@@ -165,6 +165,7 @@ final class EPrintEndpointLiveTest extends TestCase
         self::assertNotNull($result);
         self::assertInstanceOf(CreateShipmentWithLabelsBcResponseDTO::class, $result);
         self::assertNotNull($result->getShipments());
+        
         self::assertNotNull($result->getLabels());
         self::assertNotEmpty($result->getShipments());
         self::assertNotEmpty($result->getLabels());
@@ -676,7 +677,7 @@ final class EPrintEndpointLiveTest extends TestCase
     {
         $customer = $this->requireEprintCustomerFromEnv();
         [$receiverAddress, $shipperAddress] = $this->buildFrenchAddresses();
-        $labelType = new LabelTypeDTO(LabelTypeEnum::PDF);
+        $labelType = new LabelTypeDTO(LabelTypeEnum::EPL);
 
         return new CreateShipmentWithLabelsBcRequestDTO(
             (int) $customer->countrycode,
