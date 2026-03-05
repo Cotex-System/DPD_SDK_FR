@@ -1,6 +1,6 @@
 <?php
 namespace DPD\Models\Response\EPrint;
-use DPD\Models\EPrint\Shipment\ShipmentDTO;
+use DPD\Models\EPrint\Shipment\ShipmentBcDTO;
 use DPD\Models\ParentDTO;
 use DPD\Models\EPrint\Labels\LabelDTO;
 class CreateShipmentWithLabelsBcResponseDTO extends ParentDTO{
@@ -54,7 +54,7 @@ class CreateShipmentWithLabelsBcResponseDTO extends ParentDTO{
             return null;
         }
 
-        if ($value instanceof ShipmentDTO) {
+        if ($value instanceof ShipmentBcDTO) {
             return [$value];
         }
 
@@ -85,7 +85,7 @@ class CreateShipmentWithLabelsBcResponseDTO extends ParentDTO{
 
         $result = [];
         foreach ($items as $item) {
-            if ($item instanceof ShipmentDTO) {
+            if ($item instanceof ShipmentBcDTO) {
                 $result[] = $item;
                 continue;
             }
@@ -95,7 +95,7 @@ class CreateShipmentWithLabelsBcResponseDTO extends ParentDTO{
             }
 
             if (is_array($item)) {
-                $result[] = ShipmentDTO::from($item);
+                $result[] = ShipmentBcDTO::from($item);
             }
         }
 
