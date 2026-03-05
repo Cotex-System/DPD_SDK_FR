@@ -4,7 +4,7 @@ use DPD\Models\EPrint\Shipment\ShipmentDTO;
 use DPD\Models\ParentDTO;
 use DPD\Models\EPrint\Labels\LabelDTO;
 class CreateShipmentWithLabelsBcResponseDTO extends ParentDTO{
-    /** @var ShipmentDTO[]|null */
+    /** @var ShipmentBcDTO[]|null */
     private ?array $shipments;
 
     /** @var LabelDTO[]|null|LabelDTO */
