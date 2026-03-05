@@ -32,12 +32,19 @@ class ParentDTO implements ArraySerializable
         /** @var static $instance */
         $instance = $reflection->newInstanceWithoutConstructor();
 
+        /** @var array<string, string> $propertyNameMap */
+        $propertyNameMap = [];
+        foreach ($reflection->getProperties() as $reflectionProperty) {
+            $propertyNameMap[strtolower($reflectionProperty->getName())] = $reflectionProperty->getName();
+        }
+
         foreach ($data as $property => $value) {
-            if (!$reflection->hasProperty($property)) {
+            $propertyKey = strtolower((string) $property);
+            if (!array_key_exists($propertyKey, $propertyNameMap)) {
                 continue;
             }
 
-            $reflectionProperty = $reflection->getProperty($property);
+            $reflectionProperty = $reflection->getProperty($propertyNameMap[$propertyKey]);
             if (!$reflectionProperty->isPublic()) {
                 $reflectionProperty->setAccessible(true);
             }

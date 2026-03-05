@@ -36,10 +36,11 @@ class CreateShipmentWithLabelsBcResponseDTO extends ParentDTO{
         $data = is_object($source) ? get_object_vars($source) : $source;
 
         $shipments = null;
+        
         if (array_key_exists('shipments', $data)) {
             $shipments = self::hydrateShipments($data['shipments']);
         }
-
+        
         $labels = null;
         if (array_key_exists('labels', $data)) {
             $labels = self::hydrateLabels($data['labels']);
