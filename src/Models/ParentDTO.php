@@ -89,10 +89,26 @@ class ParentDTO implements ArraySerializable
     {
         $array = [];
         foreach ($this as $key => $value) {
+            if ($key === 'shopid') {
+                $serializedValue = $value;
+                if ($value instanceof ArraySerializable) {
+                    $serializedValue = $value->toArray();
+                } elseif (is_array($value)) {
+                    $serializedValue = array_map(function ($item) {
+                        return $item instanceof ArraySerializable ? $item->toArray() : $item;
+                    }, $value);
+                }
+
+                $array['shopid'] = $serializedValue;
+                $array['ShopID'] = $serializedValue;
+                continue;
+            }
+
             $normalizedKey = match ($key) {
                 'weigth' => 'weight',
                 'postalCode' => 'zipCode',
                 'refnrasbarcode' => 'refasbarcode',
+                'Shopaddress' => 'shopaddress',
                 default => $key,
             };
             if ($value instanceof ArraySerializable) {

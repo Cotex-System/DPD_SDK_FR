@@ -9,17 +9,22 @@ use DPD\DPDClient;
 use DPD\Exceptions\TransportException;
 use DPD\Models\EPrint\Address\AddressDTO;
 use DPD\Models\EPrint\CustomerDTO;
+use DPD\Models\EPrint\Address\ShopAddressDTO;
+use DPD\Models\EPrint\Enum\ContactTypeEnum;
 use DPD\Models\EPrint\Enum\LabelTypeEnum;
 use DPD\Models\EPrint\Enum\ReferenceTypeEnum;
+use DPD\Models\EPrint\Parcel\ParcelShopDTO;
 use DPD\Models\EPrint\Labels\LabelTypeDTO;
 use DPD\Models\EPrint\Labels\PickupDataDTO;
 use DPD\Models\EPrint\ReferenceInBarcodeDTO;
+use DPD\Models\EPrint\Service\ContactDTO;
 use DPD\Models\Request\EPrint\CreateCollectionRequestBcDTO;
 use DPD\Models\Request\EPrint\CreatePickupAtCustomerBcDTO;
 use DPD\Models\Request\EPrint\CreateReverseInverseShipmentBcRequestDTO;
 use DPD\Models\Request\EPrint\CreateReverseInverseShipmentWithLabelsBcRequestDTO;
 use DPD\Models\EPrint\Service\SlaveRequestDTO;
 use DPD\Models\EPrint\Service\SlaveServicesDTO;
+use DPD\Models\EPrint\Service\StdServicesDTO;
 use DPD\Models\Request\EPrint\CreateMultiShipmentBcRequestDTO;
 use DPD\Models\Request\EPrint\CreateShipmentBcRequestDTO;
 use DPD\Models\Request\EPrint\CreateShipmentWithLabelsBcRequestDTO;
@@ -167,6 +172,24 @@ final class EPrintEndpointLiveTest extends TestCase
         self::assertNotNull($result->getShipments());
         
         self::assertNotNull($result->getLabels());
+        self::assertNotEmpty($result->getShipments());
+        self::assertNotEmpty($result->getLabels());
+    }
+
+    public function testCreateShipmentWithLabelsBcToRelayWithServices(): void
+    {
+        self::assertNotNull(self::$client);
+        $this->requireCreateShipmentTestsEnabled();
+
+        $request = $this->buildCreateShipmentWithLabelsBcRelayRequest();
+
+        $result = self::$client->eprint()->createShipmentWithLabelsBc($request);
+
+        self::assertNotNull($result);
+        self::assertInstanceOf(CreateShipmentWithLabelsBcResponseDTO::class, $result);
+        self::assertNotNull($result->getShipments());
+        self::assertNotNull($result->getLabels());
+        
         self::assertNotEmpty($result->getShipments());
         self::assertNotEmpty($result->getLabels());
     }
@@ -693,6 +716,55 @@ final class EPrintEndpointLiveTest extends TestCase
             null,
             null,
             null,
+            'ORDER-' . date('Ymd'),
+            null,
+            null,
+            getenv('DPD_LIVE_SHIPPING_DATE') ?: date('d.m.Y'),
+            null,
+            null
+        );
+    }
+
+    private function buildCreateShipmentWithLabelsBcRelayRequest(): CreateShipmentWithLabelsBcRequestDTO
+    {
+        $customer = $this->requireEprintCustomerFromEnv();
+        [$receiverAddress, $shipperAddress] = $this->buildFrenchAddresses();
+
+        $relayAddress = new ShopAddressDTO(
+            'P91601',
+            'L’As De Trefle',
+            'FR',
+            '81260',
+            'BRASSAC',
+            '11 ALLEE DU CHATEAU',
+            '+33616432424'
+        );
+
+        $contact = new ContactDTO(
+            '+33616432424',
+            null,
+            null,
+            ContactTypeEnum::AUTOMATIC_SMS,
+            null
+        );
+
+        $parcelshop = new ParcelShopDTO($relayAddress);
+        $services = new StdServicesDTO(null, $contact, $parcelshop, null, null, null, null);
+
+        return new CreateShipmentWithLabelsBcRequestDTO(
+            (int) $customer->countrycode,
+            (int) $customer->centernumber,
+            (int) $customer->number,
+            $receiverAddress,
+            null,
+            $shipperAddress,
+            null,
+            '1.20',
+            'LIVE-RLY-' . date('YmdHis'),
+            new LabelTypeDTO(LabelTypeEnum::EPL),
+            null,
+            null,
+            $services,
             'ORDER-' . date('Ymd'),
             null,
             null,
