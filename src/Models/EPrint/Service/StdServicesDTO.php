@@ -2,26 +2,28 @@
 
 namespace DPD\Models\EPrint\Service;
 use DPD\Models\ParentDTO;
-use DPD\Models\EPrint\Parcel\ParcelDTO;
+use DPD\Models\EPrint\Service\ParcelShopDTO;
 use DPD\Models\EPrint\Service\ContactDTO;
+use DPD\Models\EPrint\Service\ReverseDTO;
+use DPD\Models\EPrint\Service\ReverseInverseServicesDTO;
 
 class StdServicesDTO extends ParentDTO{
 
     public ?ExtraInsuranceDTO $extraInsurance;
     public ?ContactDTO $contact;
-    public ?ParcelDTO $parcel;
+    public ?ParcelShopDTO $parcelshop;
     public ?ReverseDTO $reverse;
-
+    public ?ReverseInverseServicesDTO $reverseInverseBCReturn;
     public ?AutoConsolidationDTO $autoConsolidation;
     public ?MarketingDTO $marketing;
 
-    public function __construct(?ExtraInsuranceDTO $extraInsurance = null, ?ContactDTO $contact = null, ?ParcelDTO $parcel = null, ?ReverseDTO $reverse = null,  ?AutoConsolidationDTO $autoConsolidation = null, ?MarketingDTO $marketing = null)
+    public function __construct(?ExtraInsuranceDTO $extraInsurance = null, ?ContactDTO $contact = null, ?ParcelShopDTO $parcelshop = null, ?ReverseDTO $reverse = null, ?ReverseInverseServicesDTO $reverseInverseBCReturn = null, ?AutoConsolidationDTO $autoConsolidation = null, ?MarketingDTO $marketing = null)
     {
         $this->extraInsurance = $extraInsurance;
         $this->contact = $contact;
-        $this->parcel = $parcel;
+        $this->parcelshop = $parcelshop;
         $this->reverse = $reverse;
-
+        $this->reverseInverseBCReturn = $reverseInverseBCReturn;
         $this->autoConsolidation = $autoConsolidation;
         $this->marketing = $marketing;
     }
@@ -66,19 +68,19 @@ class StdServicesDTO extends ParentDTO{
     }
 
     /**
-     * Get the value of parcel
+     * Get the value of parcelshop
      */
-    public function getParcel(): ?ParcelDTO
+    public function getParcelShop(): ?ParcelShopDTO
     {
-        return $this->parcel;
+        return $this->parcelshop;
     }
 
     /**
-     * Set the value of parcel
+     * Set the value of parcelshop
      */
-    public function setParcel(?ParcelDTO $parcel): self
+    public function setParcelShop(?ParcelShopDTO $parcelshop): self
     {
-        $this->parcel = $parcel;
+        $this->parcelshop = $parcelshop;
 
         return $this;
     }
@@ -98,6 +100,23 @@ class StdServicesDTO extends ParentDTO{
     {
         $this->reverse = $reverse;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of reverseInverseBCReturn
+     */
+    public function getReverseInverseBCReturn(): ?ReverseInverseServicesDTO
+    {
+        return $this->reverseInverseBCReturn;
+    }
+
+    /**
+     * Set the value of reverseInverseBCReturn
+     */
+    public function setReverseInverseBCReturn(?ReverseInverseServicesDTO $reverseInverseBCReturn): self
+    {
+        $this->reverseInverseBCReturn = $reverseInverseBCReturn;
         return $this;
     }
 
