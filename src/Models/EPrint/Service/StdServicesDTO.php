@@ -2,7 +2,7 @@
 
 namespace DPD\Models\EPrint\Service;
 use DPD\Models\ParentDTO;
-use DPD\Models\EPrint\Service\ParcelShopDTO;
+use DPD\Models\EPrint\Parcel\ParcelShopDTO;
 use DPD\Models\EPrint\Service\ContactDTO;
 use DPD\Models\EPrint\Service\ReverseDTO;
 use DPD\Models\EPrint\Service\ReverseInverseServicesDTO;
