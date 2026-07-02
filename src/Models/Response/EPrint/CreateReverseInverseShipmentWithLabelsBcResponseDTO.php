@@ -67,7 +67,7 @@ class CreateReverseInverseShipmentWithLabelsBcResponseDTO extends ParentDTO{
     {
         return $this->shipment;
     }
-    public function getLabels(): ?array
+    public function getLabels(): array|LabelDTO|null
     {        return $this->labels;
     }
 }
