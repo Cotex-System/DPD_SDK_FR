@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace DPD\Models\Response\EPrint;
 
+use DPD\Models\EPrint\Labels\LabelDTO;
 use DPD\Models\EPrint\Shipment\ShipmentBcDTO;
 use DPD\Models\ParentDTO;
 
 class CreateReverseInverseShipmentWithLabelsBcResponseDTO extends ParentDTO{
 
     private ?ShipmentBcDTO $shipment = null;
-    /** @var LabelDTO[]|null */
-    private ?array $labels = null;
+    /** @var LabelDTO[]|null|LabelDTO */
+    private LabelDTO|array|null $labels = null;
     public function __construct(?ShipmentBcDTO $shipment = null, ?array $labels = null)
     {
         $this->shipment = $shipment;
