@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionUnionType;
 
 class ParentDTO implements ArraySerializable
 {
@@ -157,6 +158,10 @@ class ParentDTO implements ArraySerializable
         }
 
         $type = $property->getType();
+        if ($type instanceof ReflectionUnionType) {
+            return static::hydrateUnionValue($property, $value, $type);
+        }
+
         if (!$type instanceof ReflectionNamedType) {
             return $value;
         }
@@ -183,6 +188,41 @@ class ParentDTO implements ArraySerializable
         if (is_subclass_of($className, self::class) && (is_array($value) || is_object($value) || is_string($value))) {
             /** @var class-string<self> $className */
             return $className::from($value);
+        }
+
+        return $value;
+    }
+
+    private static function hydrateUnionValue(ReflectionProperty $property, mixed $value, ReflectionUnionType $type): mixed
+    {
+        $namedTypes = [];
+        foreach ($type->getTypes() as $memberType) {
+            if ($memberType instanceof ReflectionNamedType) {
+                $namedTypes[] = $memberType;
+            }
+        }
+
+        foreach ($namedTypes as $memberType) {
+            if ($memberType->isBuiltin()) {
+                continue;
+            }
+
+            $className = $memberType->getName();
+            if (is_subclass_of($className, self::class) && (is_array($value) || is_object($value) || is_string($value))) {
+                /** @var class-string<self> $className */
+                return $className::from($value);
+            }
+        }
+
+        foreach ($namedTypes as $memberType) {
+            if ($memberType->isBuiltin() && $memberType->getName() === 'array' && (is_array($value) || is_object($value))) {
+                if (is_object($value)) {
+                    /** @var array<string, mixed> $value */
+                    $value = get_object_vars($value);
+                }
+
+                return static::hydrateArrayItems($property, $value);
+            }
         }
 
         return $value;

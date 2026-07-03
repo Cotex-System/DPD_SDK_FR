@@ -41,6 +41,26 @@ final class ParentDTOTest extends TestCase
         self::assertSame('secret', $dto->privateValue());
     }
 
+    public function testFromHydratesUnionArrayDtoFromStdClass(): void
+    {
+        $source = new \stdClass();
+        $source->labels = (object) [
+            'Label' => [
+                [
+                    'type' => 'PDF',
+                    'Label' => ['YmFzZTY0'],
+                ],
+            ],
+        ];
+
+        $dto = ParentDTOTestLabelContainerDTO::from($source);
+
+        self::assertIsArray($dto->labels);
+        self::assertCount(1, $dto->labels);
+        self::assertInstanceOf(ParentDTOTestLabelDTO::class, $dto->labels[0]);
+        self::assertSame('PDF', $dto->labels[0]->type);
+    }
+
     public function testFromSupportsDtoWithRequiredConstructor(): void
     {
         $dto = ParentDTOTestCtorRequiredDTO::from(['id' => 77]);
@@ -118,4 +138,18 @@ final class ParentDTOTestCtorRequiredDTO extends ParentDTO
     {
         $this->id = $id;
     }
+}
+
+final class ParentDTOTestLabelContainerDTO extends ParentDTO
+{
+    /** @var ParentDTOTestLabelDTO[]|null|ParentDTOTestLabelDTO */
+    public ParentDTOTestLabelDTO|array|null $labels = null;
+}
+
+final class ParentDTOTestLabelDTO extends ParentDTO
+{
+    public ?string $type = null;
+
+    /** @var string[]|null */
+    public ?array $Label = null;
 }
